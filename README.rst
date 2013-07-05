@@ -11,10 +11,10 @@ Need AWS setup with the following information in a file called ~/.aws_secrets::
 	keypair_name: KEYPAIR_ID
 	keypair_path: PATH_TO_KEYPAIR_PEM
 
-ALSO put your access and secret keys in environment variables (for packer)
+ALSO put your access and secret keys in environment variables in your .bashrc or similar (for packer)::
 
-export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
-export AWS_SECRET_ACCESS_KEY=THE_ASSOCIATED_SECRET_KEY
+	export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
+	export AWS_SECRET_ACCESS_KEY=THE_ASSOCIATED_SECRET_KEY
 
 Software Requirements
 -----------------------
@@ -36,5 +36,7 @@ Create your own AMI with an associated vagrant box
 
 Launch the box
 --------------
-#. vagrant up --provider=aws
-#. vagrant ssh
+
+::
+	vagrant up --provider=aws
+	vagrant ssh
