@@ -1,0 +1,3 @@
+package {
+	'ntp': ensure => 'installed';
+}
