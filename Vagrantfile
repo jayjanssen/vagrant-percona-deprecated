@@ -20,8 +20,10 @@ Vagrant.configure("2") do |config|
 	end
 
   config.vm.provision :puppet do |puppet|
-     puppet.manifests_path = "manifests"
-     puppet.manifest_file  = "init.pp"
+		puppet.manifests_path = "puppet/manifests"
+		puppet.manifest_file  = "init.pp"
+		puppet.module_path = "puppet/modules"
+		puppet.options = "--verbose"
   end
 
 

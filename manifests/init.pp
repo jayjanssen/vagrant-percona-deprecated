@@ -1,3 +1,0 @@
-package {
-	'ntp': ensure => 'installed';
-}
