@@ -57,6 +57,8 @@ class percona::server {
 			package {
 				"percona-server-client":
 					alias => "MySQL-client";
+				"libmysqlclient-dev":
+					alias => "MySQL-devel";
 				"percona-server-server":
 					name => $percona_server_version ? {
 						'55' => "percona-server-server-5.5",
