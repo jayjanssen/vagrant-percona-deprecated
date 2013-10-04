@@ -1,12 +1,31 @@
 class misc::tpcc_mysql {	
-	exec {
-		"build-essentials":
-			command => '/usr/bin/yum groupinstall "Development Tools" -y',
-			cwd => "/tmp",
-			unless => "/bin/rpm -q make";
+
+
+	case $operatingsystem {
+		centos: {
+			package { 
+				"openssl-devel": ensure => 'installed'; 
+			}
+			exec {
+				"build-essentials":
+					command => '/usr/bin/yum groupinstall "Development Tools" -y',
+					cwd => "/tmp",
+					unless => "/bin/rpm -q make";
+			}
+		}
+		ubuntu: {
+			package { 
+				"libssl-dev": ensure => 'installed', alias => "openssl-devel"; 
+			}
+			exec {
+				"build-essentials":
+					command => '/usr/bin/apt-get install build-essential -y',
+					cwd => "/tmp",
+					unless => "/usr/bin/dpkg -l make";
+			}
+		}
 	}
-	package { 
-		"openssl-devel": ensure => 'installed'; 
+	package {
 		"bzr": ensure => 'installed'; 
 	}
 	
