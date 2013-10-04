@@ -1,11 +1,26 @@
 class mha::node {
-	exec {
-		"mha4mysql-node":
-			command => "/usr/bin/yum localinstall -y https://mysql-master-ha.googlecode.com/files/mha4mysql-node-0.54-0.el6.noarch.rpm",
-			cwd => "/tmp",
-			unless => "/bin/rpm -q mha4mysql-node",
-			require => [Package['MySQL-shared-compat'], File['/tmp/sysbench.rpm']];
+	
+	case $operatingsystem {
+		centos: {
+			exec {
+				"mha4mysql-node":
+					command => "/usr/bin/yum localinstall -y https://mysql-master-ha.googlecode.com/files/mha4mysql-node-0.54-0.el6.noarch.rpm",
+					cwd => "/tmp",
+					unless => "/bin/rpm -q mha4mysql-node";
+			}
+		}
+		ubuntu: {
+			exec {
+				"mha4mysql-node":
+					command => "wget https://mysql-master-ha.googlecode.com/files/mha4mysql-node_0.54-0_all.deb -qO /tmp/mha4mysql_node.deb && dpkg -i /tmp/mha4mysql_node.deb && rm /tmp/mha4mysql_node.deb",
+					cwd => "/tmp",
+					path => "/usr/bin:/bin",
+					unless => "/usr/bin/dpkg -l mha4mysql-node";
+			}
+		}
 	}
+	
+
 
 	user {
 		'mha':
@@ -18,6 +33,7 @@ class mha::node {
 	file {
 		'/etc/sudoers.d/mha_sudo':
 			ensure => present,
+			mode => 0440,	
 			content => 'Cmnd_Alias VIP_MGMT = /sbin/ip
 
 mha     ALL=(root)      NOPASSWD: VIP_MGMT
