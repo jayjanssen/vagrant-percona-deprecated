@@ -1,0 +1,38 @@
+compatibility: whitetank
+
+totem {
+	version: 2
+	secauth: on
+	threads: 0
+	interface {
+		ringnumber: <%= ringnumber %>
+		bindnetaddr: <%= pcmk_ip %>
+	   	mcastaddr: <%= mcastaddr %>
+		mcastport: <%= mcastport %>
+	}
+}
+
+logging {
+	fileline: off
+	to_stderr: no
+	to_logfile: yes
+	to_syslog: yes
+	logfile: /var/log/corosync.log
+	debug: off
+	timestamp: on
+	logger_subsys {
+		subsys: AMF
+		debug: off
+	}
+}
+
+amf {
+	mode: disabled
+}
+
+service {
+	# Load the Pacemaker Cluster Resource Manager
+	name: pacemaker
+	ver:  1
+}
+
