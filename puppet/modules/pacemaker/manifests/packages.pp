@@ -9,19 +9,18 @@ class pacemaker::packages {
 	# Get crmsh from opensuse repo
 	case $operatingsystem {
 		centos: {
-			yumrepo{ 'network_ha-clustering_Stable':
-				descr => "Stable High Availability/Clustering packages (CentOS_CentOS-6)",
-				gpgcheck => "1",
-				enabled => "1",
-				baseurl => "http://download.opensuse.org/repositories/network:/ha-clustering:/Stable/CentOS_CentOS-6/
-",
-				gpgkey => "http://download.opensuse.org/repositories/network:/ha-clustering:/Stable/CentOS_CentOS-6/repodata/repomd.xml.key"
-				
+			
+			exec {
+				"opensuse_ha_repo":
+					command => "wget -O opensuse_ha_repo http://download.opensuse.org/repositories/network:/ha-clustering:/Stable/CentOS_CentOS-6/network:ha-clustering:Stable.repo",
+					cwd => "/etc/yum.repos.d",
+					creates => "/etc/yum.repos.d/opensuse_ha_repo",
+					path => ['/bin','/usr/bin','/usr/local/bin']
 			}
 			
 			package {
 				"crmsh":
-					require => Yumrepo['network_ha-clustering_Stable'],
+					require => Exec['opensuse_ha_repo'],
 					ensure => "present";
 			}
 		}

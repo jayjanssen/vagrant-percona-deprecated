@@ -21,7 +21,10 @@ class misc {
 	case $operatingsystem {
 		centos: {
 			service {
-				'iptables': ensure => 'stopped', enable => false;
+				'iptables': 
+					ensure => 'stopped', 
+					enable => false, 
+					hasstatus => false
 			}
 			exec{ 'stop-iptables':
 				command => '/etc/init.d/iptables stop',
