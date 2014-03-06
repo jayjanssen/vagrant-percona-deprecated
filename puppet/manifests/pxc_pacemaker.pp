@@ -18,6 +18,6 @@ Class['percona::repository'] -> Class['percona::toolkit']
 Class['percona::cluster::packages'] -> Class['percona::cluster::config']
 
 class {'pacemaker': pcmk_ip => $ipaddress_eth1 }
-include pacemaker::mysql_monitor
+include pacemaker::pxc_resource_agent
 
-Class['pacemaker::mysql_monitor'] -> Class['pacemaker']
+Class['pacemaker::pxc_resource_agent'] -> Class['pacemaker']
