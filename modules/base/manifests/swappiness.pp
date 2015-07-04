@@ -5,10 +5,11 @@ class base::swappiness( $swappiness = 1) {
 			cwd => '/root',
 			unless => "grep '^vm.swappiness = $swappiness' /etc/sysctl.conf",
 			path => ['/usr/bin', '/bin'];
-    'apply_sysctl':
-      command => "sysctl -p",
-			path => ['/usr/sbin', '/usr/bin'],
-      unless => "sysctl vm.swappiness | grep '^vm.swappiness = $swappiness$'";
-  }
+		'apply_sysctl':
+			# We use -w instead of -p to avoid unknown key errors
+			command => "sysctl -w vm.swappiness=0",
+			path => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
+			unless => "sysctl vm.swappiness | egrep '^vm.swappiness = $swappiness$'";
+ 	}
 }
 
