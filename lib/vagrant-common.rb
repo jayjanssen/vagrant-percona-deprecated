@@ -87,26 +87,26 @@ end
 # -- ram: amount of RAM (in MB)
 def provider_virtualbox ( name, config, ram = 256, cpus = 1 )
 	config.vm.provider "virtualbox" do |vb, override|
-    vb.name = name
-    vb.cpus = cpus
-    vb.memory = ram
-    
-    vb.customize ["modifyvm", :id, "--ioapic", "on" ]
+		vb.name = name
+		vb.cpus = cpus
+		vb.memory = ram
 
-    # fix for slow dns https://github.com/mitchellh/vagrant/issues/1172
-  	vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
+		vb.customize ["modifyvm", :id, "--ioapic", "on" ]
+
+		# fix for slow dns https://github.com/mitchellh/vagrant/issues/1172
+		vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
 		vb.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
-    
-    # Custom ip resolver that works with DHCP or explicit addresses (and is fast)
-    override.hostmanager.ip_resolver = proc do |vm, resolving_vm|
-      if vm.id
-        `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
-      end
-    end
 
-    if block_given?
-      yield( vb, override )
-    end
+		# Custom ip resolver that works with DHCP or explicit addresses (and is fast)
+		override.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+		  if vm.id
+		    `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+		  end
+		end
+
+		if block_given?
+		  yield( vb, override )
+		end
 	end	
 end
 
