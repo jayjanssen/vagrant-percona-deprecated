@@ -85,7 +85,6 @@ if $enable_consul == 'true' {
 
 	include consul::local_dns
 	
-	Class['percona::cluster::server'] ~> Class['consul'] 
 	Class['consul::local_dns'] -> Class['percona::cluster::service'] 
 	Class['consul'] -> Class['percona::cluster::service']
 

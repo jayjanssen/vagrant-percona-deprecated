@@ -22,8 +22,9 @@ $config_hash = delete_undef_values( {
 })
 
 class { 'consul':
-	join_cluster => $join_cluster,
-    config_hash => $config_hash
+    manage_service => true,
+    config_hash => $config_hash,
+    join_cluster => $join_cluster
 }
 
 Class['base::insecure'] -> Class['consul']

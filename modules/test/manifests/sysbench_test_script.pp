@@ -1,7 +1,7 @@
 class test::sysbench_test_script {
 	if !$mysql_host { $mysql_host 	= 'localhost' 	}
 	if !$mysql_port { $mysql_port 	= '3306' 	}
-	if !$schema	{ $schema 	= 'test' 	}
+	if !$schema	{ $schema 	= 'sbtest' 	}
 	if !$tables	{ $tables	= 1 		}
 	if !$rows	{ $rows		= 100000 	}
 	if !$threads	{ $threads	= 1 		}
@@ -41,8 +41,8 @@ sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-drive
 		}
         
 		consul::service {
-            'sysbench_running': check_script   => "killall -0 sysbench", check_interval => '10s';
-            'sysbench_ready': check_script   => "which sysbench", check_interval => '1m';
+            'sysbench_running': checks => [{script => "killall -0 sysbench", interval => '10s'}];
+            'sysbench_ready': checks => [{script => "which sysbench", interval => '1m'}];
 	    }
     }
 }
