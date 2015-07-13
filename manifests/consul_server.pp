@@ -8,7 +8,7 @@ $config_hash = delete_undef_values( {
     'data_dir'    => '/opt/consul',
     'log_level'   => 'INFO',
     'node_name'   => $node_name ? {
-        undef => $hostname,
+        undef => $vagrant_hostname,
         default => $node_name
     },
     'bind_addr'   => $default_interface ? {
