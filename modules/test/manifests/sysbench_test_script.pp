@@ -5,7 +5,7 @@ class test::sysbench_test_script {
 	if !$tables	{ $tables	= 1 		}
 	if !$rows	{ $rows		= 100000 	}
 	if !$threads	{ $threads	= 1 		}
-	if !$tx_rate	{ $tx_rate	= 50		}
+	if !$tx_rate	{ $tx_rate	= 0		}
 	if !$engine     { $engine       = 'innodb'      }
 
 	file {
