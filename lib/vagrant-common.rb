@@ -10,6 +10,9 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 	require 'yaml'
 
 	aws_secrets_file = File.join( Dir.home, '.aws_secrets' )
+
+	# workaround for https://github.com/mitchellh/vagrant-aws/issues/331
+	config.vm.synced_folder ".", "/vagrant", type: "rsync"
 	
 	if( File.readable?( aws_secrets_file ))
 		config.vm.provider "aws" do |aws, override|
