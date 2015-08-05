@@ -28,3 +28,5 @@ class { 'consul':
 }
 
 Class['base::insecure'] -> Class['consul']
+
+include consul::local_dns
