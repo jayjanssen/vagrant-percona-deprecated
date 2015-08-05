@@ -96,6 +96,14 @@ if ( $percona_agent_api_key ) {
     Class['percona::cluster::service'] -> Class['percona::agent']
 }
 
+if ( $vividcortex_api_key ) {
+	class { 'misc::vividcortex':
+		api_key => $vividcortex_api_key
+	}
+    
+    Class['percona::cluster::service'] -> Class['misc::vividcortex']
+}
+
 if $sysbench_skip_test_client != 'true' {
     include test::sysbench_test_script
 }
