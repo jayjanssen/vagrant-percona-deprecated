@@ -10,14 +10,11 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 	require 'yaml'
 
 	aws_secrets_file = File.join( Dir.home, '.aws_secrets' )
-
-	# workaround for https://github.com/mitchellh/vagrant-aws/issues/331
-	config.vm.synced_folder ".", "/vagrant", type: "rsync"
 	
 	if( File.readable?( aws_secrets_file ))
 		config.vm.provider "aws" do |aws, override|
 			aws.instance_type = instance_type
-		
+
 			aws_config = YAML::load_file( aws_secrets_file )
 			aws.access_key_id = aws_config.fetch("access_key_id")
 			aws.secret_access_key = aws_config.fetch("secret_access_key")
@@ -28,6 +25,10 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 
 			# Used_subnet_id can be overridden if it is nil
 			used_subnet_id = subnet_id
+
+
+			# workaround for https://github.com/mitchellh/vagrant-aws/issues/331
+			override.vm.synced_folder ".", "/vagrant", type: "rsync"
 
 			if region == nil
 				aws.keypair_name = aws_config["keypair_name"]
