@@ -5,3 +5,4 @@ packer/packer_cache
 packer/crash.log
 Vagrantfile
 sftp-config.json
+.sync
