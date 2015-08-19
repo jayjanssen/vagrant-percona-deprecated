@@ -5,7 +5,7 @@
 # -- region: defaults to 'us-east-1'
 # -- hostmanager_aws_ips: when using hostmanager, should we use 'public' or 'private' ips?
 
-$aws_ip_cache = Hash.new
+$ip_cache = Hash.new
 def provider_aws( name, config, instance_type, region = nil, security_groups = nil, hostmanager_aws_ips = nil, subnet_id = nil )
 	require 'yaml'
 
@@ -68,12 +68,12 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 				end
 
 				override.hostmanager.ip_resolver = proc do |vm|
-					if $aws_ip_cache[name] == nil
+					if $ip_cache[name] == nil
 						vm.communicate.execute("curl -s http://169.254.169.254/latest/meta-data/" + awsrequest + " 2>&1") do |type,data|
-							$aws_ip_cache[name] = data if type == :stdout
+							$ip_cache[name] = data if type == :stdout
 						end
 					end
-					$aws_ip_cache[name]
+					$ip_cache[name]
 				end
 			end
 
@@ -131,7 +131,7 @@ end
 
 
 # Configure this node for Vmware
-def provider_openstack( name, config, flavor, security_groups = nil, networks = nil, floating_ip = nil )
+def provider_openstack( name, config, flavor, security_groups = nil, network = nil, hostmanager_openstack_ips = nil )
     require 'yaml'
     require 'vagrant-openstack-plugin'
 
@@ -156,15 +156,30 @@ def provider_openstack( name, config, flavor, security_groups = nil, networks = 
                 os.security_groups = security_groups
             end
 
-            if networks != nil
-                os.networks = networks
+            if network != nil
+                os.network = network
             end
 
+            os.floating_ip = :auto
+            os.floating_ip_pool = "external-net"
 
-            if floating_ip != nil
-                os.floating_ip = floating_ip
-                os.floating_ip_pool = :auto
-            end
+
+			if Vagrant.has_plugin?("vagrant-hostmanager")
+				if hostmanager_openstack_ips == "private" or hostmanager_openstack_ips == nil
+					awsrequest = "local-ipv4"
+				elsif hostmanager_openstack_ips == "public"
+					awsrequest = "public-ipv4"
+				end
+
+				override.hostmanager.ip_resolver = proc do |vm|
+					if $ip_cache[name] == nil
+						vm.communicate.execute("curl -s http://169.254.169.254/latest/meta-data/" + awsrequest + " 2>&1") do |type,data|
+							$ip_cache[name] = data if type == :stdout
+						end
+					end
+					$ip_cache[name]
+				end
+			end
 
             if block_given?
                 yield( os, override )
