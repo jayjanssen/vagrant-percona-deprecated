@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
         }
       }
   
-      provider_aws( "PXC #{name}", node_config, 't2.small', aws_region, pxc_security_groups, aws_ips) { |aws, override|
+      provider_aws( name, node_config, 't2.small', aws_region, pxc_security_groups, aws_ips) { |aws, override|
         aws.block_device_mapping = [
             {
                 'DeviceName' => "/dev/sdl",
@@ -88,6 +88,15 @@ Vagrant.configure("2") do |config|
             }
         ]
         provision_puppet( override, "pxc_server.pp" ) {|puppet| puppet.facter = { 'datadir_dev' => 'xvdl' }}
+      }
+
+      provider_openstack( name, node_config, 'm1.xlarge', nil, 'cc7e31d8-a4aa-4544-8a74-86dfd06655d7' ) { |os, override|
+        os.disks = [
+          { "name" => "#{name}-data", "size" => 100, "description" => "MySQL Data"}
+        ]
+        provision_puppet( override, "pxc_server.pp" ) { |puppet| 
+          puppet.facter = {'datadir_dev' => 'vdb'}        
+        }
       }
 
     end

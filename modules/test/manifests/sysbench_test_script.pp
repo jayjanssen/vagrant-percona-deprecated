@@ -1,18 +1,18 @@
 class test::sysbench_test_script {
 	if !$mysql_host { $mysql_host 	= 'localhost' 	}
 	if !$mysql_port { $mysql_port 	= '3306' 	}
-	if !$schema	{ $schema 	= 'test' 	}
+	if !$schema	{ $schema 	= 'sbtest' 	}
 	if !$tables	{ $tables	= 1 		}
 	if !$rows	{ $rows		= 100000 	}
 	if !$threads	{ $threads	= 1 		}
-	if !$tx_rate	{ $tx_rate	= 50		}
+	if !$tx_rate	{ $tx_rate	= 0		}
 	if !$engine     { $engine       = 'innodb'      }
 
 	file {
 		'/usr/local/bin/run_sysbench_reload.sh':
 			ensure => present,
                         content => "sysbench --db-driver=mysql --test=/usr/share/doc/sysbench/tests/db/oltp.lua  --mysql-table-engine=$engine --mysql-user=test --mysql-password=test --mysql-db=$schema --mysql-host=$mysql_host --mysql-port=$mysql_port --oltp-tables-count=$tables cleanup
-sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-driver=mysql --mysql-user=root --mysql-password=test --mysql-db=$schema  --mysql-host=$mysql_host --mysql-port=$mysql_port  --oltp-tables-count=$tables --oltp-table-size=$rows --oltp-auto-inc=off --num-threads=$threads run",
+sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-driver=mysql --mysql-user=test --mysql-password=test --mysql-db=$schema  --mysql-host=$mysql_host --mysql-port=$mysql_port  --oltp-tables-count=$tables --oltp-table-size=$rows --oltp-auto-inc=off --num-threads=$threads run",
 			mode => 0755;
 		}
 
@@ -41,8 +41,8 @@ sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-drive
 		}
         
 		consul::service {
-            'sysbench_running': check_script   => "killall -0 sysbench", check_interval => '10s';
-            'sysbench_ready': check_script   => "which sysbench", check_interval => '1m';
+            'sysbench_running': checks => [{script => "killall -0 sysbench", interval => '10s'}];
+            'sysbench_ready': checks => [{script => "which sysbench", interval => '1m'}];
 	    }
     }
 }

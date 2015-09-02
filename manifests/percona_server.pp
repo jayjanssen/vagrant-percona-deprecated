@@ -1,5 +1,6 @@
 include stdlib 
 
+include base::hostname
 include base::packages
 include base::insecure
 
@@ -20,15 +21,18 @@ include misc::myq_tools
 
 include test::user
 
-class { 'mysql::datadir':
-	datadir_dev => $datadir_dev,
-	datadir_dev_scheduler => $datadir_dev_scheduler,
-	datadir_fs => $datadir_fs,
-	datadir_fs_opts => $datadir_fs_opts,
-	datadir_mkfs_opts => $datadir_mkfs_opts
+if $datadir_dev {
+	class { 'mysql::datadir':
+		datadir_dev => $datadir_dev,
+		datadir_dev_scheduler => $datadir_dev_scheduler,
+		datadir_fs => $datadir_fs,
+		datadir_fs_opts => $datadir_fs_opts,
+		datadir_mkfs_opts => $datadir_mkfs_opts
+	}
+
+	Class['mysql::datadir'] -> Class['percona::server']
 }
 
-Class['mysql::datadir'] -> Class['percona::server']
 Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service']
 
 
@@ -41,6 +45,7 @@ Class['base::insecure'] -> Class['percona::repository']
 Class['percona::repository'] -> Class['percona::toolkit']
 Class['percona::repository'] -> Class['percona::sysbench']
 
+Class['percona::server'] -> Class['percona::toolkit']
 
 Class['percona::service'] -> Class['test::user']
 
@@ -53,6 +58,7 @@ if $sysbench_load == 'true' {
 		engine => $engine
 	}
 	
+    Class['percona::server'] -> Class['percona::sysbench']
 	Class['percona::sysbench'] -> Class['test::sysbench_load']
 	Class['test::user'] -> Class['test::sysbench_load']
 }

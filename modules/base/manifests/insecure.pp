@@ -19,7 +19,7 @@ class base::insecure {
 		"disable-selinux":
 			path    => ["/usr/sbin","/bin","/usr/bin"],
 			command => "setenforce Permissive",
-			unless => "getenforce | grep Permissive";
+			unless => "getenforce | egrep 'Disabled|Permissive'";
 	}
 
 }

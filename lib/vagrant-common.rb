@@ -5,7 +5,7 @@
 # -- region: defaults to 'us-east-1'
 # -- hostmanager_aws_ips: when using hostmanager, should we use 'public' or 'private' ips?
 
-$aws_ip_cache = Hash.new
+$ip_cache = Hash.new
 def provider_aws( name, config, instance_type, region = nil, security_groups = nil, hostmanager_aws_ips = nil, subnet_id = nil )
 	require 'yaml'
 
@@ -14,7 +14,7 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 	if( File.readable?( aws_secrets_file ))
 		config.vm.provider "aws" do |aws, override|
 			aws.instance_type = instance_type
-		
+
 			aws_config = YAML::load_file( aws_secrets_file )
 			aws.access_key_id = aws_config.fetch("access_key_id")
 			aws.secret_access_key = aws_config.fetch("secret_access_key")
@@ -25,6 +25,10 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 
 			# Used_subnet_id can be overridden if it is nil
 			used_subnet_id = subnet_id
+
+
+			# workaround for https://github.com/mitchellh/vagrant-aws/issues/331
+			override.vm.synced_folder ".", "/vagrant", type: "rsync"
 
 			if region == nil
 				aws.keypair_name = aws_config["keypair_name"]
@@ -64,12 +68,12 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 				end
 
 				override.hostmanager.ip_resolver = proc do |vm|
-					if $aws_ip_cache[name] == nil
+					if $ip_cache[name] == nil
 						vm.communicate.execute("curl -s http://169.254.169.254/latest/meta-data/" + awsrequest + " 2>&1") do |type,data|
-							$aws_ip_cache[name] = data if type == :stdout
+							$ip_cache[name] = data if type == :stdout
 						end
 					end
-					$aws_ip_cache[name]
+					$ip_cache[name]
 				end
 			end
 
@@ -87,26 +91,26 @@ end
 # -- ram: amount of RAM (in MB)
 def provider_virtualbox ( name, config, ram = 256, cpus = 1 )
 	config.vm.provider "virtualbox" do |vb, override|
-    vb.name = name
-    vb.cpus = cpus
-    vb.memory = ram
-    
-    vb.customize ["modifyvm", :id, "--ioapic", "on" ]
+		vb.name = name
+		vb.cpus = cpus
+		vb.memory = ram
 
-    # fix for slow dns https://github.com/mitchellh/vagrant/issues/1172
-  	vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
+		vb.customize ["modifyvm", :id, "--ioapic", "on" ]
+
+		# fix for slow dns https://github.com/mitchellh/vagrant/issues/1172
+		vb.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
 		vb.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
-    
-    # Custom ip resolver that works with DHCP or explicit addresses (and is fast)
-    override.hostmanager.ip_resolver = proc do |vm, resolving_vm|
-      if vm.id
-        `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
-      end
-    end
 
-    if block_given?
-      yield( vb, override )
-    end
+		# Custom ip resolver that works with DHCP or explicit addresses (and is fast)
+		override.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+		  if vm.id
+		    `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+		  end
+		end
+
+		if block_given?
+		  yield( vb, override )
+		end
 	end	
 end
 
@@ -127,7 +131,7 @@ end
 
 
 # Configure this node for Vmware
-def provider_openstack( name, config, flavor, security_groups = nil, networks = nil, floating_ip = nil )
+def provider_openstack( name, config, flavor, security_groups = nil, network = nil, hostmanager_openstack_ips = nil )
     require 'yaml'
     require 'vagrant-openstack-plugin'
 
@@ -152,15 +156,30 @@ def provider_openstack( name, config, flavor, security_groups = nil, networks = 
                 os.security_groups = security_groups
             end
 
-            if networks != nil
-                os.networks = networks
+            if network != nil
+                os.network = network
             end
 
+            os.floating_ip = :auto
+            os.floating_ip_pool = "external-net"
 
-            if floating_ip != nil
-                os.floating_ip = floating_ip
-                os.floating_ip_pool = :auto
-            end
+
+			if Vagrant.has_plugin?("vagrant-hostmanager")
+				if hostmanager_openstack_ips == "private" or hostmanager_openstack_ips == nil
+					awsrequest = "local-ipv4"
+				elsif hostmanager_openstack_ips == "public"
+					awsrequest = "public-ipv4"
+				end
+
+				override.hostmanager.ip_resolver = proc do |vm|
+					if $ip_cache[name] == nil
+						vm.communicate.execute("curl -s http://169.254.169.254/latest/meta-data/" + awsrequest + " 2>&1") do |type,data|
+							$ip_cache[name] = data if type == :stdout
+						end
+					end
+					$ip_cache[name]
+				end
+			end
 
             if block_given?
                 yield( os, override )
@@ -183,5 +202,12 @@ def provision_puppet( config, manifest_file )
 	    if block_given?  
 	      yield( puppet )
 	    end
+
+	    # Check if the hostname is a proper string (won't be if config is an override config)
+	    # If string, then set the vagrant_hostname facter fact automatically so base::hostname works
+		if config.vm.hostname.is_a?(String)
+			puppet.facter["vagrant_hostname"] = config.vm.hostname 
+	    end
+
 	end
 end

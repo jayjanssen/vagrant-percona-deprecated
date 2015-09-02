@@ -27,6 +27,7 @@ if $enable_consul == 'true' {
 	
 	
 	class { 'consul':
+		manage_service => true,
 		join_cluster => $join_cluster,
 	    config_hash => $config_hash
 	}

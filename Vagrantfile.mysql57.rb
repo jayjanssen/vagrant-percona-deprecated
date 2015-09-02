@@ -3,8 +3,9 @@
 
 require File.dirname(__FILE__) + '/lib/vagrant-common.rb'
 
-mysql_version = "56"
-name = "57-community-tpcc"
+mysql_version = "57"
+
+name = "57-community"
 
 Vagrant.configure("2") do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
@@ -13,7 +14,6 @@ Vagrant.configure("2") do |config|
 	config.ssh.username = "root"
   
   # Provisioners
-  provision_puppet( config, "base.pp" )
   provision_puppet( config, "mysql_server.pp" ) { |puppet|  
     puppet.facter = {
       "enable_56" => 0,
@@ -22,18 +22,9 @@ Vagrant.configure("2") do |config|
     	"innodb_log_file_size"		=> "64M"
     }
   }
-  provision_puppet( config, "mysql_client.pp" ) { |puppet|
-    puppet.facter = {
-      "enable_56" => 0,
-      "enable_57" => 1
-    }
-  }
-  provision_puppet( config, "tpcc.pp" )
-  provision_puppet( config, "sysbench_build.pp" )
-  provision_puppet( config, "percona_toolkit.pp" )
   
   # Providers
-  provider_virtualbox( name, config, 256 ) { |vb, override|
+  provider_virtualbox( name, config, 1024 ) { |vb, override|
     # If we are using Virtualbox, override percona_server.pp with the right device for the datadir
     provision_puppet( override, "mysql_server.pp" ) {|puppet|
       puppet.facter = {"datadir_dev" => "dm-2"}

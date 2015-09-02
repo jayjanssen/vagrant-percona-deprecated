@@ -1,5 +1,6 @@
 include stdlib 
 
+include base::hostname
 include base::packages
 include base::insecure
 include base::swappiness
@@ -20,7 +21,13 @@ include misc::myq_tools
 
 include test::user
 
-include mysql::datadir
+class { 'mysql::datadir':
+	datadir_dev => $datadir_dev,
+	datadir_dev_scheduler => $datadir_dev_scheduler,
+	datadir_fs => $datadir_fs,
+	datadir_fs_opts => $datadir_fs_opts,
+	datadir_mkfs_opts => $datadir_mkfs_opts
+}
 
 Class['mysql::datadir'] -> Class['percona::cluster::server']
 
@@ -35,6 +42,7 @@ Class['base::insecure'] -> Class['percona::repository']
 Class['percona::repository'] -> Class['percona::toolkit']
 Class['percona::repository'] -> Class['percona::sysbench']
 
+Class['percona::cluster::client'] -> Class['percona::toolkit']
 
 Class['percona::cluster::service'] -> Class['test::user']
 
@@ -46,6 +54,7 @@ if $sysbench_load == 'true' {
 		threads => $threads
 	}
 	
+	Class['percona::cluster::client'] -> Class['percona::sysbench']
 	Class['percona::sysbench'] -> Class['test::sysbench_load']
 	Class['test::user'] -> Class['test::sysbench_load']
 }
@@ -58,7 +67,7 @@ if $enable_consul == 'true' {
         'data_dir'    => '/opt/consul',
         'log_level'   => 'INFO',
         'node_name'   => $node_name ? {
-            undef => $hostname,
+            undef => $vagrant_hostname,
             default => $node_name
         },
         'bind_addr'   => $default_interface ? {
@@ -76,7 +85,6 @@ if $enable_consul == 'true' {
 
 	include consul::local_dns
 	
-	Class['percona::cluster::server'] ~> Class['consul'] 
 	Class['consul::local_dns'] -> Class['percona::cluster::service'] 
 	Class['consul'] -> Class['percona::cluster::service']
 
@@ -88,8 +96,28 @@ if ( $percona_agent_api_key ) {
     Class['percona::cluster::service'] -> Class['percona::agent']
 }
 
+if ( $vividcortex_api_key ) {
+	class { 'misc::vividcortex':
+		api_key => $vividcortex_api_key
+	}
+    
+    Class['percona::cluster::service'] -> Class['misc::vividcortex']
+}
+
 if $sysbench_skip_test_client != 'true' {
     include test::sysbench_test_script
+}
+
+
+if $softraid == 'true' {
+	class { 'misc::softraid':
+		softraid_dev => $softraid_dev,
+		softraid_level => $softraid_level,
+		softraid_devices => $softraid_devices,
+		softraid_dev_str => $softraid_dev_str
+	}
+
+	Class['misc::softraid'] -> Class['mysql::datadir']
 }
 
 

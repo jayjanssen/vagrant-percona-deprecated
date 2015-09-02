@@ -8,7 +8,7 @@ $config_hash = delete_undef_values( {
     'data_dir'    => '/opt/consul',
     'log_level'   => 'INFO',
     'node_name'   => $node_name ? {
-        undef => $hostname,
+        undef => $vagrant_hostname,
         default => $node_name
     },
     'bind_addr'   => $default_interface ? {
@@ -22,8 +22,11 @@ $config_hash = delete_undef_values( {
 })
 
 class { 'consul':
-	join_cluster => $join_cluster,
-    config_hash => $config_hash
+    manage_service => true,
+    config_hash => $config_hash,
+    join_cluster => $join_cluster
 }
 
 Class['base::insecure'] -> Class['consul']
+
+include consul::local_dns

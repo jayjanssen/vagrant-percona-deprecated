@@ -18,7 +18,7 @@ innodb_locks_unsafe_for_binlog  = ON
 <%= "wsrep_cluster_address           = " + @wsrep_cluster_address + "\n" if defined?( @wsrep_cluster_address ) -%>
 wsrep_cluster_name              = mycluster
 
-wsrep_node_name                 = <%= @hostname %>
+wsrep_node_name                 = <%= @vagrant_hostname %>
 <%= "wsrep_node_address              = " + @wsrep_node_address + "\n" if @wsrep_node_address -%>
 
 wsrep_provider                  = /usr/lib64/libgalera_smm.so
@@ -31,7 +31,7 @@ wsrep_sst_auth                  = sst:secret
 
 <%= @extra_mysqld_config + "\n\n" if defined?( @extra_mysqld_config ) -%>
 [mysql]
-prompt                          = "<%=@hostname %> mysql> "
+prompt                          = "<%=@vagrant_hostname %> mysql> "
 
 [client]
 user                            = root
