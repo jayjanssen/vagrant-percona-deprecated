@@ -48,8 +48,9 @@ Vagrant.configure("2") do |config|
           'tokudb_fsync_log_period' => '0',
           'tokudb_cache_size' => '128M',
             
-          # PCT setup
-          'percona_agent_api_key' => ENV['PERCONA_AGENT_API_KEY']
+          # Vividcortexv setup
+          'vividcortex_api_key' => ENV['VIVIDCORTEX_API_KEY'],
+          
         }
       }
 
