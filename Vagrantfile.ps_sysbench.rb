@@ -102,7 +102,7 @@ Vagrant.configure("2") do |config|
         os.disks = [
           { "name" => "#{name}-data", "size" => 100, "description" => "MySQL Data"}
         ]
-        provision_puppet( override, "pxc_server.pp" ) { |puppet| 
+        provision_puppet( override, "percona_server.pp" ) { |puppet| 
           puppet.facter = {'datadir_dev' => 'vdb'}        
         }
       }
