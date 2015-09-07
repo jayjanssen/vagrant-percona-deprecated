@@ -21,7 +21,12 @@ wsrep_cluster_name              = mycluster
 wsrep_node_name                 = <%= @vagrant_hostname %>
 <%= "wsrep_node_address              = " + @wsrep_node_address + "\n" if @wsrep_node_address -%>
 
+<% if @architecture == "i386" %>
+wsrep_provider                  = /usr/lib/libgalera_smm.so
+<% elsif @architecture == "x86_64" %>
 wsrep_provider                  = /usr/lib64/libgalera_smm.so
+<% end %>
+
 <%= "wsrep_provider_options          = \"" + @wsrep_provider_options + "\"\n" if defined?( @wsrep_provider_options ) -%>
 
 <%= "wsrep_slave_threads             = " + @wsrep_slave_threads + "\n" if defined?( @wsrep_slave_threads ) -%>

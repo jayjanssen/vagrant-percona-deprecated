@@ -7,16 +7,23 @@ class mysql::datadir (
 ) {
 	# Need to set $datadir_dev from Vagrantfile for this to work right
 
-	package {
-    	'xfsprogs': ensure => 'present';
+	if $datadir_fs == 'xfs' {
+		package {
+	    	'xfsprogs': ensure => 'present';
+		}
 	}
+	
 	exec {
 		"mkfs_mysql_datadir":
 			command => "mkfs.$datadir_fs $datadir_mkfs_opts /dev/$datadir_dev",
-			require => Package['xfsprogs'],
+			require => $datadir_fs ? {
+				'xfs'	=> Package['xfsprogs'],
+				default	=> []
+			},
 			path => "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin",
 			unless => "mount | grep '/var/lib/mysql'";
 	}
+
 	mount {
 		"/var/lib/mysql":
 			ensure => "mounted",
@@ -27,6 +34,7 @@ class mysql::datadir (
 			require => Exec["mkfs_mysql_datadir", "mkdir_mysql_datadir"];
 
 	}
+
 	# IO scheduler
 	exec {
 		"datadir_dev_scheduler":
