@@ -92,8 +92,7 @@ Vagrant.configure("2") do |config|
 					'pxc_bootstrap_node'				=> node_params['pxc_bootstrap_node'],
 					'extra_mysqld_config'				=> 
 						'wsrep_cluster_address=gcomm://' + pxc_nodes.map{|k,v| "#{k}"}.join(',') + "\n" +
-						"\n"
-				}
+						"wsrep_sst_receive_address=" + node_params['local_vm_ip'] + "\n"
 			}
 
 			# Disable these options
