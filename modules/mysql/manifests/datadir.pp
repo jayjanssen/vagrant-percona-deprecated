@@ -3,7 +3,7 @@ class mysql::datadir (
     $datadir_dev_scheduler = 'noop', 
     $datadir_fs = 'xfs', 
     $datadir_fs_opts = 'noatime',
-    $datadir_mkfs_opts = '-f'
+    $datadir_mkfs_opts = ''
 ) {
 	# Need to set $datadir_dev from Vagrantfile for this to work right
 
