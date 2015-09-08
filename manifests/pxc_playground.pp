@@ -36,14 +36,24 @@ include percona::cluster::config
 include percona::cluster::service
 include percona::cluster::sstuser
 
-include mysql::datadir
+class { 'mysql::datadir':
+	datadir_dev => $datadir_dev,
+	datadir_dev_scheduler => $datadir_dev_scheduler,
+	datadir_fs => $datadir_fs,
+	datadir_fs_opts => $datadir_fs_opts,
+	datadir_mkfs_opts => $datadir_mkfs_opts
+}
+
 Class['mysql::datadir'] -> Class['percona::cluster::server']
 
 Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['percona::cluster::config'] -> Class['percona::cluster::service']
 
+
 include base::packages
 include base::insecure
 
+
+Class['base::insecure'] -> Class['percona::cluster::service']
 
 if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 	include percona::agent
