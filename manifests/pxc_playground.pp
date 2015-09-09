@@ -52,6 +52,7 @@ Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['perc
 include base::packages
 include base::insecure
 
+include mariadb::maxscale
 
 Class['base::insecure'] -> Class['percona::cluster::service']
 
