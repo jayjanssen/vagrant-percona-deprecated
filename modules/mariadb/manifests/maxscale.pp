@@ -8,6 +8,8 @@ class mariadb::maxscale {
 				source		=> 'https://s3-eu-west-1.amazonaws.com/gryp/tutorial-pxc-advanced/maxscale-1.2.0-i686-.rpm'
 		}
 	} elsif $architecture == 'x86_64' {
+		include mariadb::repository::maxscale
+
 		package {
 			"maxscale":
 				ensure		=> latest,

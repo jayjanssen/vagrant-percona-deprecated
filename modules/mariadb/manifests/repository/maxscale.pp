@@ -7,11 +7,11 @@ case $operatingsystem {
     yumrepo {
       "MariaDB-MaxScale":
         baseurl => $architecture ? {
-          "x86_64"    => "http://code.mariadb.com/mariadb-maxscale/latest/centos/latest/x86_64/"
+          "x86_64"    => "http://code.mariadb.com/mariadb-maxscale/latest/centos/7/x86_64/"
         },
         descr => "MariaDB-MaxScale",
         enabled => 1,
-        gpgcheck => 1,
+        gpgcheck => 0,
         gpgkey    => "https://yum.mariadb.org/RPM-GPG-KEY-MariaDB"
       }
 
