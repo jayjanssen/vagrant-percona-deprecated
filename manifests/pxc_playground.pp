@@ -59,3 +59,5 @@ Class['base::insecure'] -> Class['percona::cluster::service']
 if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 	include percona::agent
 }
+
+include training::helper_scripts

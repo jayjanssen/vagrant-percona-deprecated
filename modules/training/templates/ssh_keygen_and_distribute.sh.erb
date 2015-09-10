@@ -1,0 +1,12 @@
+#!/bin/bash
+ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -N ""
+
+
+<%- @cluster_servers.split(',').each do |node| %>
+ssh-keyscan -H <%= node %> >> ~/.ssh/known_hosts
+sshpass -p vagrant ssh-copy-id -i ~/.ssh/id_rsa.pub root@<%= node %>
+scp -r ~/.ssh/id_rsa* <%= node %>:.ssh/
+<%- 	@cluster_servers.split(',').each do |node_2| %>
+ssh <%= node %> "ssh-keyscan -H <%= node_2 %> >> ~/.ssh/known_hosts"
+<%- 	end %>
+<%- end %>
