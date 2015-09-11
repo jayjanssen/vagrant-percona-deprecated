@@ -13,8 +13,4 @@ class test::sysbench_custom_lua {
 			require => File["/root/sysbench_custom_lua"];			
 	}
 
-
-	package { 
-		"lua-posix": ensure => 'installed'; 
-	}
 }

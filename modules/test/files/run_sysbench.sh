@@ -10,8 +10,9 @@ threads=1
 tx_rate=0
 max_requests=0
 max_time=0
+sysbench_args=""
 
-while getopts ":e:s:h:p:t:r:c:b:x:a:d" opt; do
+while getopts ":e:s:h:p:t:r:c:b:x:a:d:o:" opt; do
   case $opt in
     e)
       echo "Engine: $OPTARG" >&2
@@ -61,6 +62,10 @@ while getopts ":e:s:h:p:t:r:c:b:x:a:d" opt; do
 	  echo "Duration: $OPTARG" >&2
 	  max_time=$OPTARG
 	  ;;
+	o)
+	  echo "Sybench args: $OPTARG" >&2
+	  sysbench_args=$OPTARG
+	  ;;
     :)
       echo "Option -$OPTARG requires an argument." >&2
       exit 1
@@ -82,6 +87,7 @@ function prepare {
 		--mysql-host=$mysql_host \
 		--mysql-port=$mysql_port \
 		--oltp-tables-count=$tables \
+		$sysbench_args \
 		cleanup
 
 	sysbench \
@@ -96,6 +102,7 @@ function prepare {
 		--oltp-table-size=$rows \
 		--oltp-auto-inc=off \
 		--num-threads=$threads \
+		$sysbench_args \
 		run
 
 }
@@ -119,10 +126,30 @@ function oltp {
 		--max-requests=$max_requests \
 		--max-time=$max_time \
 		--tx-rate=$tx_rate \
+		$sysbench_args \
 		run | grep -v "queue length"
 }
 
+function oltp_custom {
 
+	sysbench \
+		--db-driver=mysql \
+		--test=/root/sysbench_custom_lua/custom-oltp.lua  \
+		--mysql-table-engine=$engine \
+		--mysql-user=test \
+		--mysql-password=test \
+		--mysql-db=$schema \
+		--mysql-host=$mysql_host \
+		--mysql-port=$mysql_port \
+		--oltp-tables-count=$tables \
+		--report-interval=1 \
+		--num-threads=$threads \
+		--max-requests=$max_requests \
+		--max-time=$max_time \
+		--tx-rate=$tx_rate \
+		$sysbench_args \
+		run | grep -v "queue length"
+}
 
 case $task in
 	prepare)
@@ -130,6 +157,9 @@ case $task in
 		;;
 	oltp)
 		oltp
+		;;
+	oltp_custom)
+		oltp_custom
 		;;
 	*)
 		echo "ERROR: no or unknown task (-x) given: $task"
