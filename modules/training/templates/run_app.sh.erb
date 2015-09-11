@@ -35,4 +35,4 @@ case $1 in
 esac
 
 
-/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp -b 50
+/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp_custom -b 50 -o "--oltp-reconnect=1"
