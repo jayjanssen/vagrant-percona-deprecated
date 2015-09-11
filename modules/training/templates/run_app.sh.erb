@@ -1,0 +1,38 @@
+#!/bin/bash
+
+host=pxc1
+port=3306
+
+case $1 in
+<%- 	@cluster_servers.split(',').each do |node| %>
+	<%= node %>)
+		host=<%= node %>
+		;;<%- 	end %>
+	maxscale-rwsplit)
+		port=4006
+		;;
+	maxscale-read)
+		port=4008
+		;;
+	haproxy-all)
+		port=3307
+		;;
+	haproxy-reads)
+		port=3309
+		;;
+	haproxy-writes)
+		port=3308
+		;;
+	prepare)
+		/usr/local/bin/run_sysbench.sh -p $port -h $host -x prepare	
+		exit
+		;;
+	*)
+		echo "ERROR: invalid database access method";
+		echo "Usage:"
+		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes)"
+		exit 1
+esac
+
+
+/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp -b 50
