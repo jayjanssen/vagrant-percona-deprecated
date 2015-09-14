@@ -82,6 +82,7 @@ Vagrant.configure("2") do |config|
 					"percona_server_version"			=> mysql_version,
 					"haproxy_servers"					=> pxc_nodes.map{|k,v| "#{k}"}.join(','),
 					"haproxy_servers_primary"			=> pxc_nodes.select{|k,v| ! v.select{|k2,v2| k2=="haproxy_primary" && v2==true}.empty? }.map{|k3,v3| "#{k3}"}.join(','),
+					"maxscale_servers"                  => pxc_nodes.map{|k,v| "#{k}"}.join(','),
 					"datadir_dev" 						=> "dm-2",
 					"percona_server_version"			=> mysql_version,
 					'percona_agent_enabled'             => percona_agent_enabled,
@@ -92,8 +93,7 @@ Vagrant.configure("2") do |config|
 					'pxc_bootstrap_node'				=> node_params['pxc_bootstrap_node'],
 					'extra_mysqld_config'				=> 
 						'wsrep_cluster_address=gcomm://' + pxc_nodes.map{|k,v| "#{k}"}.join(',') + "\n" +
-						"\n"
-				}
+						"wsrep_sst_receive_address=" + name + "\n"
 			}
 
 			# Disable these options

@@ -138,4 +138,12 @@ if $softraid == 'true' {
 	Class['misc::softraid'] -> Class['mysql::datadir']
 }
 
+if ( $vividcortex_api_key ) {
+	class { 'misc::vividcortex':
+		api_key => $vividcortex_api_key
+	}
+    
+    Class['percona::service'] -> Class['misc::vividcortex']
+}
+
 
