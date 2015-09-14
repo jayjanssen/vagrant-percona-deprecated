@@ -36,7 +36,10 @@ sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-drive
 			source	=> "puppet:///modules/test/run_sysbench.sh",
 			mode 	=> 0755;
 		'/var/lib/mysql/sbtest':
-			ensure	=> directory;
+			ensure	=> directory,
+			owner	=> 'mysql',
+			group	=> 'mysql',
+			mode	=> '0755',
 	}
 
     
