@@ -65,7 +65,8 @@ if $sysbench_load == 'true' {
 		schema => $schema,
 		tables => $tables,
 		rows => $rows,
-		threads => $threads
+		threads => $threads,
+		engine => $engine
 	}
 	
 	Class['percona::cluster::client'] -> Class['percona::sysbench']
