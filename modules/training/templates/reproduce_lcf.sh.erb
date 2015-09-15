@@ -1,0 +1,36 @@
+#!/bin/bash
+set -x
+
+mysqlopts='-u test -ptest'
+
+<%- 	@cluster_servers.split(',').each do |node| %>
+mysql $mysqlopts -h <%= node %> -e "
+	set global wsrep_log_conflicts=1;
+	set global wsrep_provider_options='cert.log_conflicts=1';
+	set global wsrep_debug=on;
+	";
+<%- 	end %>
+<%- 	first, second, rest = @cluster_servers.split(',', 3) %>
+
+
+mysql $mysqlopts -h <%= first %> -e "
+	drop table if exists test.test;
+	create table test.test (id int primary key auto_increment, sec_col int, key sec_col (sec_col) ) engine=innodb;
+	insert into test.test (id, sec_col) values (1, 1), (2, 2), (3, 3);
+	";
+
+(
+	set +e;
+	timeout 10 yes "update test.test set sec_col = cast(rand()*1024 as signed integer) where id = 2;" | mysql $mysqlopts -h <%= first %> 2>&1 >/dev/null; 
+	mysql $mysqlopts -h <%= first %> -e "update test.test set sec_col = 69 where id = 1;"
+) &
+
+
+mysql $mysqlopts -h <%= second %> -e "
+	set global wsrep_provider_options='gcs.fc_limit=100000000';
+	flush tables with read lock;
+	select * from (select sleep(15)) as tbl limit 0;
+	unlock tables;
+	update test.test set sec_col = 0 where id = 1;
+	";
+

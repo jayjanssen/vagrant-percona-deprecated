@@ -1,6 +1,7 @@
 #!/bin/bash
 
-host=pxc1
+<%- 	first, other = @cluster_servers.split(',', 2) %>
+host=<%= first %>
 port=3306
 
 case $1 in
@@ -27,11 +28,18 @@ case $1 in
 		/usr/local/bin/run_sysbench.sh -p $port -h $host -x prepare	
 		exit
 		;;
-	*)
+	lcf)
+		/root/bin/reproduce_lcf.sh
+		exit
+		;;
+	help)
 		echo "ERROR: invalid database access method";
 		echo "Usage:"
-		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes)"
+		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes|lcf)"
 		exit 1
+		;;
+	*)
+		;;
 esac
 
 

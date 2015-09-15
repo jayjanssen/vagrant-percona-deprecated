@@ -61,3 +61,4 @@ if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 }
 
 include training::helper_scripts
+include training::pxc_exercises
