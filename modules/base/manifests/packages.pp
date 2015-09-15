@@ -11,6 +11,7 @@ class base::packages {
 		'bind-utils': ensure => 'present';
 		'bzip2': ensure => 'present';
 		'nano': ensure => 'present';
+		'pigz': ensure => 'present';
 	}
 	
 	if( $operatingsystem == 'centos' and $operatingsystemrelease =~ /^7/ ) {  #7.0.1406

@@ -48,8 +48,9 @@ Vagrant.configure("2") do |config|
           'tokudb_fsync_log_period' => '0',
           'tokudb_cache_size' => '128M',
             
-          # PCT setup
-          'percona_agent_api_key' => ENV['PERCONA_AGENT_API_KEY']
+          # Vividcortexv setup
+          'vividcortex_api_key' => ENV['VIVIDCORTEX_API_KEY'],
+          
         }
       }
 
@@ -88,9 +89,18 @@ Vagrant.configure("2") do |config|
         }
       }
 
-      provider_openstack( 'Packer Server #{name}', node_config, 'm1.small', nil, ['50285812-3a34-40c5-9e69-0f67fab0ae5c'], '10.60.23.208') { |os, override|
+      provider_openstack( 'Packer Server #{name}', node_config, 'm1.small', nil, ['cc7e31d8-a4aa-4544-8a74-86dfd06655d7'] ) { |os, override|
         os.disks = [
           { "name" => "#{name}-data", "size" => 10, "description" => "MySQL Data"}
+        ]
+        provision_puppet( override, "percona_server.pp" ) { |puppet| 
+          puppet.facter = {'datadir_dev' => 'vdb'}        
+        }
+      }
+      
+      provider_openstack( "Percona Server #{name}", node_config, 'm1.small', nil, 'cc7e31d8-a4aa-4544-8a74-86dfd06655d7' ) { |os, override|
+        os.disks = [
+          { "name" => "#{name}-data", "size" => 100, "description" => "MySQL Data"}
         ]
         provision_puppet( override, "percona_server.pp" ) { |puppet| 
           puppet.facter = {'datadir_dev' => 'vdb'}        
