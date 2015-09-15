@@ -13,6 +13,9 @@ class training::helper_scripts {
 			mode	=> 755;
 	}
 
+	# we need to ensure the anonymous users aren't there anymore or the run_app won't work;
+	include percona::remove_anonymous_user
+
 	package {
 		"sshpass":
 			ensure	=> installed;
