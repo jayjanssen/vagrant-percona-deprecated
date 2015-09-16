@@ -4,7 +4,14 @@
 host=<%= first %>
 port=3306
 
-case $1 in
+
+function give_help {
+		echo "Usage:"
+		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes|lcf)"
+		exit 1
+}
+
+case "$1" in
 <%- 	@cluster_servers.split(',').each do |node| %>
 	<%= node %>)
 		host=<%= node %>
@@ -32,15 +39,22 @@ case $1 in
 		/root/bin/reproduce_lcf.sh
 		exit
 		;;
+	"")
+		#default settings will be used when no argument is given
+		;;
 	help)
-		echo "ERROR: invalid database access method";
-		echo "Usage:"
-		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes|lcf)"
-		exit 1
+		give_help
+		exit 0;
 		;;
 	*)
+		echo "ERROR: invalid database access method";
+		give_help
+		exit 1;
 		;;
 esac
 
 
-/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp_custom -b 50 -o "--oltp-reconnect=1"
+while true; do
+	/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp_custom -b 50 -o "--oltp-reconnect=1"
+done
+
