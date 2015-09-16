@@ -13,7 +13,7 @@ class percona::pxc-clustercheck {
 		}
 		file {
 			"/tmp/percona-clustercheck.rpm":
-				source => "puppet:///modules/percona/percona-clustercheck-1.0-2.noarch.rpm",
+				source => "puppet:///modules/percona/percona-clustercheck-1.1-1.noarch.rpm",
 				ensure => present;
 		}
 		service {
@@ -38,7 +38,7 @@ class percona::pxc-clustercheck {
 		}
 		file {
 			"/tmp/percona-clustercheck.rpm":
-				source => "puppet:///modules/percona/percona-clustercheck-1.0-0.noarch.rpm",
+				source => "puppet:///modules/percona/percona-clustercheck-1.1-1.noarch.rpm",
 				ensure => present;
 		}
 		service {
