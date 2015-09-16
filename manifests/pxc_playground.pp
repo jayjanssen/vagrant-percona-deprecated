@@ -23,6 +23,7 @@ Class['percona::repository'] -> Class['percona::toolkit']
 
 include base::packages
 include base::hostname
+include base::motd
 
 include misc::myq_gadgets
 
