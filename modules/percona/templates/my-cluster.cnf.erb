@@ -13,7 +13,7 @@ innodb_flush_method             = O_DIRECT
 innodb_file_per_table
 <%= "innodb_flush_log_at_trx_commit  = " + @innodb_flush_log_at_trx_commit + "\n" if defined?( @innodb_flush_log_at_trx_commit ) -%>
 innodb_autoinc_lock_mode        = 2
-innodb_locks_unsafe_for_binlog  = ON
+# Deprecated: innodb_locks_unsafe_for_binlog  = ON
 
 <%= "wsrep_cluster_address           = " + @wsrep_cluster_address + "\n" if defined?( @wsrep_cluster_address ) -%>
 wsrep_cluster_name              = mycluster
