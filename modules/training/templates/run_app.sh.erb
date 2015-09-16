@@ -56,5 +56,6 @@ esac
 
 while true; do
 	/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp_custom -b 50 -o "--oltp-reconnect=1"
+	sleep 1
 done
 
