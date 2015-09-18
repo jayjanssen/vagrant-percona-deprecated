@@ -34,6 +34,21 @@ deb-src http://repo.percona.com/apt precise experimental
 			}
 		}
 		centos: {
+
+
+			if enable_repo_percona_testing {
+				notice('Percona Testing Repository Enabled')
+
+				yumrepo {
+					"percona-testing-source":
+						enabled => 1;
+					"percona-testing-noarch":
+						enabled => 1;
+					"percona-testing-\$basearch":
+						enabled => 1;
+				}
+			}
+
 			package {
 				"percona-release":
 					source => "http://www.percona.com/downloads/percona-release/redhat/0.1-3/percona-release-0.1-3.noarch.rpm",

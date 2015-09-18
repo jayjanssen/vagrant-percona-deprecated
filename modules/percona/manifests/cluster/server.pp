@@ -40,10 +40,13 @@ class percona::cluster::server {
 				"Percona-XtraDB-Cluster-server$percona_server_version.$hardwaremodel":
 					require => [ Package['galera'], Package["MySQL-shared"] ],
 					alias => "MySQL-server",
-					ensure => "installed";
+					ensure => "latest",
+					notify => Service['mysql'];
 				"Percona-XtraDB-Cluster-galera-$galera_version":
 					alias => "galera",
-					ensure => "installed";
+					ensure => "latest",
+					notify => Service['mysql'];
+
 			}
 		}
 		ubuntu: {
