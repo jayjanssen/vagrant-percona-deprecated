@@ -1,0 +1,20 @@
+#!/bin/bash
+
+case $1 in
+	enable)
+		action='add'
+		;;
+	disable)
+		action='del'
+		;;
+	*)
+		echo "ERROR: either use enable or disable"
+		exit 1;
+esac
+
+
+<%- last_node= @cluster_servers.split(',').last %>
+echo "Last node is " <%= last_node %>
+
+ssh <%= last_node %> tc qdisc $action dev eth1 root netem delay 200ms
+
