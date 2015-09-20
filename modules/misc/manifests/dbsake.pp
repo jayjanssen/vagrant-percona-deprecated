@@ -3,6 +3,6 @@ class misc::dbsake {
 		'/usr/local/bin/dbsake':
 			ensure	=> present,
 			mode 	=> 0755,
-			source  => "puppet:///misc/dbsake";
+			source  => "puppet:///modules/misc/dbsake";
 	}
 }

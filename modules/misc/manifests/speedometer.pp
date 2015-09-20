@@ -10,7 +10,7 @@ class misc::speedometer {
 				'/root/bin/speedometer':
 					ensure	=> present,
 					mode 	=> 0755,
-					source  => "puppet:///misc/speedometer.py"
+					source  => "puppet:///modules/misc/speedometer.py"
 			}
 		}
 		ubuntu: {
