@@ -31,8 +31,10 @@ include misc::dbsake
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
 
-include haproxy::server-pxc
-
+notice ("haproxy disabled is $haproxy_disabled")
+if ( $haproxy_disabled == 'false' )  {
+	include haproxy::server-pxc
+}
 
 include percona::cluster::server
 include percona::cluster::config
