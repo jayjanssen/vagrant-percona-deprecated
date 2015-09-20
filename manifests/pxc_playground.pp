@@ -25,6 +25,7 @@ include base::packages
 include base::hostname
 include base::motd
 
+include misc::speedometer
 include misc::myq_gadgets
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
