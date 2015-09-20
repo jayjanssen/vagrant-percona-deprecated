@@ -27,6 +27,7 @@ include base::motd
 
 include misc::speedometer
 include misc::myq_gadgets
+include misc::dbsake
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
 
