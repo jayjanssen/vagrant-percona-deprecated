@@ -3,17 +3,20 @@
 
 class percona::pxc-clustercheck {	
 
+	# version that is latest
+	$version="1.1-1"
+
 	if( $operatingsystem == 'centos' and $operatingsystemrelease =~ /^7/ ) {  #7.0.1406
 		exec {
 			"percona-clustercheck":
 				command => "/usr/bin/yum localinstall -y /tmp/percona-clustercheck.rpm",
 				cwd => "/tmp",
-				unless => "/bin/rpm -q percona-clustercheck",
+				unless => "/bin/rpm -q percona-clustercheck-$version",
 				require => [ File['/tmp/percona-clustercheck.rpm'], Package["MySQL-python"], Package["python-twisted-web"] ];
 		}
 		file {
 			"/tmp/percona-clustercheck.rpm":
-				source => "puppet:///modules/percona/percona-clustercheck-1.0-2.noarch.rpm",
+				source => "puppet:///modules/percona/percona-clustercheck-$version.noarch.rpm",
 				ensure => present;
 		}
 		service {
@@ -33,12 +36,12 @@ class percona::pxc-clustercheck {
 			"percona-clustercheck":
 				command => "/usr/bin/yum localinstall -y /tmp/percona-clustercheck.rpm",
 				cwd => "/tmp",
-				unless => "/bin/rpm -q percona-clustercheck",
+				unless => "/bin/rpm -q percona-clustercheck-$version",
 				require => [File['/tmp/percona-clustercheck.rpm']];
 		}
 		file {
 			"/tmp/percona-clustercheck.rpm":
-				source => "puppet:///modules/percona/percona-clustercheck-1.0-0.noarch.rpm",
+				source => "puppet:///modules/percona/percona-clustercheck-$version.noarch.rpm",
 				ensure => present;
 		}
 		service {

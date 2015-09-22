@@ -30,6 +30,18 @@ sysbench --test=/usr/share/doc/sysbench/tests/db/parallel_prepare.lua --db-drive
 			mode => 0755;
 	}
     
+	file {
+		'/usr/local/bin/run_sysbench.sh':
+			ensure	=> present,
+			source	=> "puppet:///modules/test/run_sysbench.sh",
+			mode 	=> 0755;
+		'/var/lib/mysql/sbtest':
+			ensure	=> directory,
+			owner	=> 'mysql',
+			group	=> 'mysql',
+			mode	=> '0755',
+	}
+
     
 	if $enable_consul == 'true' {
         # Watch for a test in consul and trigger it when the appropriate key/value is set

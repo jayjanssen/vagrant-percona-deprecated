@@ -4,7 +4,6 @@ dofile(pathtest .. "custom-common.lua")
 
 package.path = package.path..";/usr/share/lua/5.1/?.lua"
 package.cpath = package.cpath..";/usr/lib64/lua/5.1/?.so"
-posix = require("posix")
 
 function thread_init(thread_id)
    set_vars()
@@ -32,10 +31,6 @@ function event(thread_id)
    local pad_val
    local query
 
-   
-   if oltp_rand_delay then
-      posix.sleep(sb_rand_uniform(oltp_rand_delay_min, oltp_rand_delay_max))
-   end
 
 
    if oltp_reconnect then

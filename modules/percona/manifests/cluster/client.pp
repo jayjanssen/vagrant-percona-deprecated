@@ -27,10 +27,10 @@ class percona::cluster::client {
                     
 				"Percona-XtraDB-Cluster-client$percona_server_version.$hardwaremodel":
 					alias => "MySQL-client",
-					ensure => "installed";
+					ensure => "latest";
 				"Percona-XtraDB-Cluster-shared$percona_server_version.$hardwaremodel":
 					alias => "MySQL-shared",
-					ensure => "installed";
+					ensure => "latest";
 			}
 		}
 		ubuntu: {

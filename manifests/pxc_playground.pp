@@ -23,13 +23,18 @@ Class['percona::repository'] -> Class['percona::toolkit']
 
 include base::packages
 include base::hostname
+include base::motd
 
+include misc::speedometer
 include misc::myq_gadgets
+include misc::dbsake
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
 
-include haproxy::server-pxc
-
+notice ("haproxy disabled is $haproxy_disabled")
+if ( $haproxy_disabled == 'false' )  {
+	include haproxy::server-pxc
+}
 
 include percona::cluster::server
 include percona::cluster::config
@@ -59,3 +64,6 @@ Class['base::insecure'] -> Class['percona::cluster::service']
 if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 	include percona::agent
 }
+
+include training::helper_scripts
+include training::pxc_exercises

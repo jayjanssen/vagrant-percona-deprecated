@@ -1,0 +1,61 @@
+#!/bin/bash
+
+<%- 	first, other = @cluster_servers.split(',', 2) %>
+host=<%= first %>
+port=3306
+
+
+function give_help {
+		echo "Usage:"
+		echo -e "\t$0 (prepare|<%= @cluster_servers.gsub(',', '|') %>|maxscale-rwsplit|maxscale-read|haproxy-all|haproxy-reads|haproxy-writes|lcf)"
+		exit 1
+}
+
+case "$1" in
+<%- 	@cluster_servers.split(',').each do |node| %>
+	<%= node %>)
+		host=<%= node %>
+		;;<%- 	end %>
+	maxscale-rwsplit)
+		port=4006
+		;;
+	maxscale-read)
+		port=4008
+		;;
+	haproxy-all)
+		port=3307
+		;;
+	haproxy-reads)
+		port=3309
+		;;
+	haproxy-writes)
+		port=3308
+		;;
+	prepare)
+		/usr/local/bin/run_sysbench.sh -p $port -h $host -x prepare	
+		exit
+		;;
+	lcf)
+		/root/bin/reproduce_lcf.sh
+		exit
+		;;
+	"")
+		#default settings will be used when no argument is given
+		;;
+	help)
+		give_help
+		exit 0;
+		;;
+	*)
+		echo "ERROR: invalid database access method";
+		give_help
+		exit 1;
+		;;
+esac
+
+
+while true; do
+	/usr/local/bin/run_sysbench.sh -c 4 -p $port -h $host -x oltp_custom -b 50 -o "--oltp-reconnect=1"
+	sleep 1
+done
+
