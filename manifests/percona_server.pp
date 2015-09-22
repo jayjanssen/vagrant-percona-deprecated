@@ -119,7 +119,9 @@ if $sysbench_skip_test_client != 'true' {
 
 if $mha_node == 'true' or $mha_manager == 'true' {
   include mha::node
+  include mha::user
   Class['percona::server'] -> Class['mha::node']
+  Class['percona::server'] -> Class['mha::user']
 
   if $mha_manager == 'true' {
     include mha::manager
