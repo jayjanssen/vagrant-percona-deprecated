@@ -3,7 +3,7 @@ class mysql::server {
 		'mysql-community-server':
 			ensure => 'installed',
 			require => Package['mariadb-libs'];	
-		'mysql-community-libs-compat':
+		'mysql-community-libs':
 			ensure => 'installed',
 			require => Package['mariadb-libs'];
 		'mariadb-libs':

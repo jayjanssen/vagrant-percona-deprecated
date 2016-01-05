@@ -86,6 +86,8 @@ if $sysbench_load == 'true' {
 
 if $sysbench_skip_test_client != 'true' {
     include test::sysbench_test_script
+	Class['percona::sysbench'] -> Class['test::sysbench_test_script']
+
 }
 
 if $softraid == 'true' {
