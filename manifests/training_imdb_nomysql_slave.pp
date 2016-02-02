@@ -6,5 +6,7 @@ class { 'mysql::datadir':
 include base::packages
 include percona::repository
 
+include training::ssh_key
+
 include percona::config
 
