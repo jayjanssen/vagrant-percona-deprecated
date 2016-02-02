@@ -12,6 +12,8 @@ class { 'mysql::backupdir':
 	backupdir_dev => $backupdir_dev
 }
 
+Class['mysql::datadir'] -> Class['mysql::backupdir']
+
 
 include misc::innotop
 

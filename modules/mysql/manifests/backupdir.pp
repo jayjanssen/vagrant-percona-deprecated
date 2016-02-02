@@ -7,12 +7,6 @@ class mysql::backupdir (
 ) {
 	# Need to set $backupdir_dev from Vagrantfile for this to work right
 
-	if $backupdir_fs == 'xfs' {
-		package {
-	    	'xfsprogs': ensure => 'present';
-		}
-	}
-	
 	exec {
 		"mkfs_mysql_backupdir":
 			command => "mkfs.$backupdir_fs $backupdir_mkfs_opts /dev/$backupdir_dev",
