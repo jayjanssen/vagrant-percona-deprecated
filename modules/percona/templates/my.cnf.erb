@@ -2,7 +2,7 @@
 datadir                         = /var/lib/mysql
 log_error                       = error.log
 
-socket				= /var/lib/mysql/mysqld.sock
+socket				= /var/lib/mysql/mysql.sock
 
 log-bin
 server-id = <%= @server_id %>
@@ -23,6 +23,6 @@ prompt                          = "<%=@vagrant_hostname %> mysql> "
 
 [client]
 user                            = root
-socket				= /var/lib/mysql/mysqld.sock
+socket				= /var/lib/mysql/mysql.sock
 
 !includedir /etc/mysql.d
