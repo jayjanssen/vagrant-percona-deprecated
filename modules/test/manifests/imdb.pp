@@ -46,6 +46,7 @@ for file in `ls /var/lib/mysql/imdb_import/*.cfg`; do
     mysql -e "ALTER TABLE $table DISCARD TABLESPACE;" imdb
     mv /var/lib/mysql/imdb_import/$table.{cfg,ibd} /var/lib/mysql/imdb/ 
     mysql -e "ALTER TABLE $table IMPORT TABLESPACE;" imdb
+    mysql -e "ANALYZE TABLE $table;" imdb
 done
 rm -rf /var/lib/mysql/imdb_import
 ',
