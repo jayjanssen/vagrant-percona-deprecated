@@ -15,6 +15,7 @@ innodb_log_file_size            = <%= @innodb_log_file_size %>
 innodb_flush_method				= O_DIRECT
 innodb_file_per_table
 innodb_flush_log_at_trx_commit	= <%= @innodb_flush_log_at_trx_commit %>
+performance-schema-consumer-events-statements-history=ON
 
 <%=@extra_mysqld_config %>
 
