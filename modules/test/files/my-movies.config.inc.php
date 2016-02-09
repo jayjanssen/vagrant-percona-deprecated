@@ -3,9 +3,9 @@
 define('BASE_URI', '/my-movies/');
 
 define('MYSQL_HOST', 'localhost');
-define('MYSQL_USER', 'app');
+define('MYSQL_USER', 'root');
 define('MYSQL_DATABASE', 'imdb');
-define('MYSQL_PASSWORD', 'pass');
+define('MYSQL_PASSWORD', '');
 
 define('DEBUG_MODE', true);
 
