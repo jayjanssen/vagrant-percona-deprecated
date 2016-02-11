@@ -47,7 +47,9 @@ for file in `ls /var/lib/mysql/imdb_import/*.cfg`; do
     mv /var/lib/mysql/imdb_import/$table.{cfg,ibd} /var/lib/mysql/imdb/ 
     mysql -e "ALTER TABLE $table IMPORT TABLESPACE;" imdb
     mysql -e "ANALYZE TABLE $table;" imdb
+    rm /var/lib/mysql/imdb/$table.cfg
 done
+touch /tmp/imdb-innodb-ibd.import.sh.done
 rm -rf /var/lib/mysql/imdb_import
 ',
                 mode    => 755;
@@ -71,7 +73,7 @@ rm -rf /var/lib/mysql/imdb_import
             "mysql-import-tablespaces":
                 command => "/tmp/imdb-innodb-ibd.import.sh",
                 timeout => 0,
-                creates => "/var/lib/mysql/imdb/cast_info.cfg",
+                creates => "/tmp/imdb-innodb-ibd.import.sh.done",
                 require => [ File["/tmp/imdb-innodb-ibd.import.sh"] , Exec["mysql-imdb-create-tables-tablespace"] ];
         }
 
