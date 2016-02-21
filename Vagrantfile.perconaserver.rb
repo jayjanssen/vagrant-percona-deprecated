@@ -27,7 +27,7 @@ if_adapter='vboxnet14'
 hostmanager_aws_ips='public'
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "perconajayj/centos-x86_64"
+    config.vm.box = "grypyrg/centos-x86_64"
     config.ssh.username = "root"
 
     # it's disabled by default, it's done during the provision phase

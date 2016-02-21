@@ -45,7 +45,7 @@ hostmanager_aws_ips='private'
 
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
+	config.vm.box = "grypyrg/centos-x86_64"
 	config.vm.box_version = "~> 7"
 	config.ssh.username = "root"
 

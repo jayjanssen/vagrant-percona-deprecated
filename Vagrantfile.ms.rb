@@ -55,7 +55,7 @@ end
 
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
+	config.vm.box = "grypyrg/centos-x86_64"
 	config.ssh.username = "root"
   
 	build_box( config, 'master', '192.168.70.2', '1' )

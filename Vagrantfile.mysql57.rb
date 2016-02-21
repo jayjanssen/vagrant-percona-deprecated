@@ -10,7 +10,7 @@ name = "57-community"
 Vagrant.configure("2") do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
 	config.vm.hostname = name
-	config.vm.box = "perconajayj/centos-x86_64"
+	config.vm.box = "grypyrg/centos-x86_64"
 	config.ssh.username = "root"
   
   # Provisioners
