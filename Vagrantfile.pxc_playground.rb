@@ -58,7 +58,7 @@ percona_agent_api_key='----'
 
 Vagrant.configure("2") do |config|
 	config.vm.box = "grypyrg/centos-x86_64"
-	config.ssh.username = "root"
+	config.ssh.username = "vagrant"
 
 	# it's disabled by default, it's done during the provision phase
 	config.hostmanager.enabled = false

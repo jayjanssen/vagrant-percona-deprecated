@@ -23,7 +23,7 @@ cluster_address = 'gcomm://' + Array.new( pxc_nodes ){ |i| pxc_node_name_prefix 
 
 Vagrant.configure("2") do |config|
 	config.vm.box = "grypyrg/centos-x86_64"
-	config.ssh.username = "root"
+	config.ssh.username = "vagrant"
 
   # Create the PXC nodes
   (1..pxc_nodes).each do |i|
