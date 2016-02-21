@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 2 nodes for replication.  Run 'ms-setup.pl' after these are provisioned.
 require './lib/vagrant-common.rb'

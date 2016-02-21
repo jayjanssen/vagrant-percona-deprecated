@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 3 nodes with a common PXC
 # it also installs haproxy

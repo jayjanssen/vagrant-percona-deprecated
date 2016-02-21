@@ -6,7 +6,7 @@
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'aws'
 
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 require './lib/vagrant-common.rb'
 
 Vagrant.configure("2") do |config|
