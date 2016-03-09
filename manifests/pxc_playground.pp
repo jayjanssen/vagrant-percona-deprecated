@@ -56,7 +56,7 @@ Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['perc
 
 include base::packages
 include base::insecure
-
+include base::sshd_rootenabled
 include mariadb::maxscale
 
 Class['base::insecure'] -> Class['percona::cluster::service']
@@ -67,5 +67,6 @@ if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 
 include training::helper_scripts
 include training::pxc_exercises
+include base::sshd_rootenabled
 
-Class['training::helper_scripts'] -> Class['misc::speedometer']
+Class['base::sshd_rootenabled'] -> Class['training::helper_scripts'] -> Class['misc::speedometer']
