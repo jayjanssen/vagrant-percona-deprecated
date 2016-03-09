@@ -1,6 +1,9 @@
 # This is an rpm generated from https://github.com/grypyrg/clustercheck/tree/centos7
 # it has a better name, init script and rpm spec.
 
+## DEPRECATED
+# THIS SCRIPT HAS SOME SERIOUS FLAWS, DO NOT USE
+#
 class percona::pxc-clustercheck {	
 
 	# version that is latest

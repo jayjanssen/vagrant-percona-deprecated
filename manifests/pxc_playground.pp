@@ -33,13 +33,14 @@ Class['base::packages'] -> Class['misc::myq_gadgets']
 
 notice ("haproxy disabled is $haproxy_disabled")
 if ( $haproxy_disabled == 'false' )  {
-	include haproxy::server-pxc
+	include haproxy::server
 }
 
 include percona::cluster::server
 include percona::cluster::config
 include percona::cluster::service
 include percona::cluster::sstuser
+include percona::cluster::xinetdclustercheck
 
 class { 'mysql::datadir':
 	datadir_dev => $datadir_dev,

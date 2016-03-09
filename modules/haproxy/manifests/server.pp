@@ -8,10 +8,12 @@ class haproxy::server {
 		'haproxy':
 			ensure => 'running';
 	}
-
+	
 	file {
-		'/etc/haproxy/haproxy.conf':
-			ensure => 'present';
+		'/etc/haproxy/haproxy.cfg':
+			ensure => 'present',
+			require => Package['haproxy'],
+			content => template('haproxy/haproxy.cfg.erb');
 	}
 	
 }
