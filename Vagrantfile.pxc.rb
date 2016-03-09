@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 3 nodes with a common PXC, but you need to run bootstrap.sh to connect them.
 
@@ -22,8 +22,8 @@ cluster_address = 'gcomm://' + Array.new( pxc_nodes ){ |i| pxc_node_name_prefix 
 
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
 
   # Create the PXC nodes
   (1..pxc_nodes).each do |i|

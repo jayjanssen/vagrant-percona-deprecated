@@ -45,12 +45,12 @@ This section should get you up and running.
 
 ### Openstack Setup
 
-For this to run, you'll need a custom Vagrantbox with an image to boot from on your Openstack Cloud.  I've created a CentOS one here: https://github.com/jayjanssen/packer-percona, but it would need to be rebuilt in other clouds.
+For this to run, you'll need a custom Vagrantbox with an image to boot from on your Openstack Cloud.  I've created a CentOS one here: https://github.com/grypyrg/packer-percona, but it would need to be rebuilt in other clouds.
 
 Perconians can use a prebuilt image in our Openstack lab with this command: 
 
 ```
-vagrant box add perconajayj/centos-x86_64 --provider openstack
+vagrant box add grypyrg/centos-x86_64 --provider openstack
 ```
 
 You'll also need your secrets setup in ~/.openstack_secrets:
@@ -124,11 +124,11 @@ Note that the default 'keypair_name' and 'keypair_path' can still be used.  Regi
 
 #### Boxes and multi-region
 
-Note that the aws Vagrant boxes you use must include AMI's in each region.  For example, see the regions listed here: https://vagrantcloud.com/perconajayj/centos-x86_64.  Packer, which is used to build this box, can be configured to add more regions if desired, but it requires building a new box.  
+Note that the aws Vagrant boxes you use must include AMI's in each region.  For example, see the regions listed here: https://vagrantcloud.com/grypyrg/centos-x86_64.  Packer, which is used to build this box, can be configured to add more regions if desired, but it requires building a new box.  
 
 #### VPC integration
 
-The latest versions of my perconajayj/centos-x86-64 boxes require VPC.  Currently this software supports passing a vpc_subnet_id per instance in one of two ways:
+The latest versions of my grypyrg/centos-x86-64 boxes require VPC.  Currently this software supports passing a vpc_subnet_id per instance in one of two ways:
 
 1. Set the default_vpc_subnet_id in the ~/.aws_secrets file.  This can either be global or per-region.
 1. Pass a subnet_id into the provider_aws method in the vagrant-common.rb file.
@@ -200,7 +200,7 @@ I use a system where I define this repo as a submodule in a test-specific git re
 ```bash
 git init some-test
 cd some-test
-git submodule add git@github.com:jayjanssen/vagrant-percona.git
+git submodule add git@github.com:grypyrg/vagrant-percona.git
 ln -s vagrant-percona/lib
 ln -s vagrant-percona/manifests
 ln -s vagrant-percona/modules

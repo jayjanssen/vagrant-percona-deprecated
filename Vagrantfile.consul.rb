@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 3 nodes with a common PXC, but you need to run bootstrap.sh to connect them.
 
@@ -45,9 +45,9 @@ hostmanager_aws_ips='private'
 
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
+	config.vm.box = "grypyrg/centos-x86_64"
 	config.vm.box_version = "~> 7"
-	config.ssh.username = "root"
+	config.ssh.username = "vagrant"
 
   config.hostmanager.enabled = false # Disable for AWS
   config.hostmanager.include_offline = true

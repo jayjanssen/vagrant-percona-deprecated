@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 3 nodes with a common PXC
 # it also installs haproxy
@@ -57,8 +57,8 @@ percona_agent_enabled=false
 percona_agent_api_key='----'
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
 
 	# it's disabled by default, it's done during the provision phase
 	config.hostmanager.enabled = false
