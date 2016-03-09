@@ -12,7 +12,7 @@ include percona::cluster::client
 
 Class['percona::repository'] -> Class['percona::cluster::client']
 
-Class['percona::cluster::client'] -> Class['test::sysbench_pkg'] -> Class['test::sysbench_test_script']
+Class['percona::cluster::server'] -> Class['test::sysbench_pkg'] -> Class['test::sysbench_test_script']
 include test::sysbench_pkg
 include test::sysbench_test_script
 
@@ -67,3 +67,5 @@ if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 
 include training::helper_scripts
 include training::pxc_exercises
+
+Class['training::helper_scripts'] -> Class['misc::speedometer']
