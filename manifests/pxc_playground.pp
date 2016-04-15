@@ -72,18 +72,6 @@ if ( $percona_agent_enabled == true or $percona_agent_enabled == 'true' ) {
 
 include training::helper_scripts
 
-if ( $management_node == 'true') {
-	notice ("This is the management node")
-
-	Class['training::helper_scripts'] -> Exec['ssh_keygen_and_distribute']
-
-	exec {
-		"ssh_keygen_and_distribute":
-			command		=> "/root/bin/ssh_keygen_and_distribute.sh && touch /root/ssh_keygen_and_distribute.sh.done",
-			creates		=> '/root/ssh_keygen_and_distribute.sh.done',
-	}
-}
-
 include training::pxc_exercises
 include base::sshd_rootenabled
 
