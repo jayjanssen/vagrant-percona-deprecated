@@ -1,6 +1,8 @@
 [mysqld]
 datadir                         = /var/lib/mysql
 log_error                       = error.log
+socket                          = /var/lib/mysql/mysql.sock
+
 
 query_cache_size=0
 query_cache_type=0
@@ -40,6 +42,7 @@ prompt                          = "<%=@vagrant_hostname %> mysql> "
 
 [client]
 user                            = root
+socket                          = /var/lib/mysql/mysql.sock
 
 !include /etc/my-pxc.cnf
 !include /etc/my-pxc-extra.cnf
