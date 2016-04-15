@@ -36,6 +36,11 @@ if ( $haproxy_disabled == 'false' )  {
 	include haproxy::server
 }
 
+notice ("maxscale disabled is $maxscale_disabled")
+if ( $maxscale_disabled == 'false' ) {
+	include mariadb::maxscale
+}
+
 include percona::cluster::server
 include percona::cluster::config
 include percona::cluster::service
@@ -58,7 +63,6 @@ Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['perc
 include base::packages
 include base::insecure
 include base::sshd_rootenabled
-include mariadb::maxscale
 
 Class['base::insecure'] -> Class['percona::cluster::service']
 
