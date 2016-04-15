@@ -6,6 +6,7 @@ class haproxy::server {
 
 	service {
 		'haproxy':
+			enable => true,
 			ensure => 'running';
 	}
 	
@@ -15,5 +16,5 @@ class haproxy::server {
 			require => Package['haproxy'],
 			content => template('haproxy/haproxy.cfg.erb');
 	}
-	
+
 }
