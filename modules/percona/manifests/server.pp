@@ -1,7 +1,7 @@
 class percona::server {
-	# Default PS version is 55 for now
+	# Default PS version is 56 for now
 	if( $percona_server_version == undef ) {
-		$percona_server_version = '55'
+		$percona_server_version = '56'
 	}
 	
 	# ugly way of making sure the version we want to use doesn't conflict with the old one
