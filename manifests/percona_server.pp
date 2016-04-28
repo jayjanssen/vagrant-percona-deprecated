@@ -15,6 +15,7 @@ include percona::sysbench
 include percona::server
 include percona::config
 include percona::service
+include percona::server-password
 
 include misc::myq_gadgets
 include misc::myq_tools
@@ -33,7 +34,7 @@ if $datadir_dev {
 	Class['mysql::datadir'] -> Class['percona::server']
 }
 
-Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service']
+Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service'] -> Class['percona::server-password'] -> Class['test::user']
 
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
