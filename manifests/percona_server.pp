@@ -115,6 +115,7 @@ if ( $percona_agent_api_key ) {
 
 if $sysbench_skip_test_client != 'true' {
     include test::sysbench_test_script
+    Class['percona::service'] -> Class['test::sysbench_test_script']
 }
 
 if $mha_node == 'true' or $mha_manager == 'true' {
