@@ -17,7 +17,7 @@ require File.dirname(__FILE__) + '/lib/vagrant-common.rb'
 mysql_version = "56"
 name = "perconaserver"
 aws_region = 'us-east-1'
-security_groups = ""
+security_groups = "default"
 
 ip_address='192.168.8.70'
 if_adapter='vboxnet14'
@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
                 }
             }
 
-            provider_aws( "PXC #{name}", node_config, 't2.small', aws_region, security_groups, hostmanager_aws_ips) { |aws, override|
+            provider_aws( "PXC #{name}", node_config, 'm3.medium', aws_region, security_groups, hostmanager_aws_ips) { |aws, override|
                 aws.block_device_mapping = [
                     {
                         'DeviceName' => "/dev/sdb",

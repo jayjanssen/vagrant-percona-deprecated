@@ -32,7 +32,7 @@ def build_box( config, name, ip, server_id )
       }
     }
   
-  	provider_aws( name, node_config, 't2.small') { |aws, override|
+  	provider_aws( name, node_config, 'm3.medium') { |aws, override|
       aws.block_device_mapping = [
           {
               'DeviceName' => "/dev/sdl",

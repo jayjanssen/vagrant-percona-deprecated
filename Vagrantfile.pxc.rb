@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
         }
       }
   
-      provider_aws( name, node_config, 't2.small', aws_region, pxc_security_groups, aws_ips) { |aws, override|
+      provider_aws( name, node_config, 'm3.medium', aws_region, pxc_security_groups, aws_ips) { |aws, override|
         aws.block_device_mapping = [
             {
                 'DeviceName' => "/dev/sdl",

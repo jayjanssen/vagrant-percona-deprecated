@@ -85,7 +85,7 @@ Vagrant.configure("2") do |config|
 				}
 			}  
       
-			provider_aws( "consul #{name}", node_config, 't2.small', node_params['aws_region'], node_params['security_groups'], hostmanager_aws_ips)
+			provider_aws( "consul #{name}", node_config, 'm3.medium', node_params['aws_region'], node_params['security_groups'], hostmanager_aws_ips)
 
 		end
 	}
@@ -119,7 +119,7 @@ Vagrant.configure("2") do |config|
 				}
 			}  
       
-			provider_aws( "consul #{name}", node_config, 't2.small', node_params['aws_region'], node_params['security_groups'], hostmanager_aws_ips)
+			provider_aws( "consul #{name}", node_config, 'm3.medium', node_params['aws_region'], node_params['security_groups'], hostmanager_aws_ips)
 
 		end
 	}
