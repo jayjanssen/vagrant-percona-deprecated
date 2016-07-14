@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
     }
   }
   
-	provider_aws( name, config, 'm1.small') { |aws, override|
+	provider_aws( name, config, 'm3.medium') { |aws, override|
     # For AWS, we want to map the proper device for this instance type
 		aws.block_device_mapping = [
 			{

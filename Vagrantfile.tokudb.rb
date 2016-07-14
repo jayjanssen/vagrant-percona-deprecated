@@ -9,7 +9,7 @@ ps_servers = 1
 # AWS configuration
 aws_region = "us-east-1"
 aws_ips='private' # Use 'public' for cross-region AWS.  'private' otherwise (or commented out)
-security_groups = []
+security_groups = ["default"]
 
 
 Vagrant.configure("2") do |config|
@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
         }
       }
   
-      provider_aws( "Percona Server #{name}", node_config, 't2.small', aws_region, security_groups, aws_ips) { |aws, override|
+      provider_aws( "Percona Server #{name}", node_config, 'm3.medium', aws_region, security_groups, aws_ips) { |aws, override|
 
         aws.block_device_mapping = [
             {
