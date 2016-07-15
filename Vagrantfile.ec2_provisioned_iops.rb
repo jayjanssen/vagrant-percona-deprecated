@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
   
   
   # Providers
-  provider_virtualbox( name, config, 256 ) { |vb, override|
+  provider_virtualbox( nil, config, 256 ) { |vb, override|
     # If we are using Virtualbox, override percona_server.pp with the right device for the datadir
     provision_puppet( override, "percona_server.pp" ) {|puppet|
       puppet.facter = {"datadir_dev" => "dm-2"}

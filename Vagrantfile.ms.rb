@@ -26,7 +26,7 @@ def build_box( config, name, ip, server_id )
     }
   
     # Providers
-    provider_virtualbox( name, node_config, 256 ) { |vb, override|
+    provider_virtualbox( nil, node_config, 256 ) { |vb, override|
       provision_puppet( override, "percona_server.pp" ) {|puppet|
         puppet.facter = {"datadir_dev" => "dm-2"}
       }
