@@ -136,7 +136,7 @@ Vagrant.configure("2") do |config|
 
 
 			# Providers
-			provider_virtualbox( name, node_config, 256) { |vb, override|
+			provider_virtualbox( nil, node_config, 256) { |vb, override|
 				provision_puppet( override, "pxc_playground.pp" ) {|puppet|
 					puppet.facter = {"datadir_dev" => "dm-2"}
 				}
