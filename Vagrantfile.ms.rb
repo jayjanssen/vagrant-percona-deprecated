@@ -13,6 +13,7 @@ def build_box( config, name, ip, server_id )
     provision_puppet( node_config, "base.pp" )
     provision_puppet( node_config, "percona_server.pp" ) { |puppet|  
       puppet.facter = {
+       'cluster_servers' => name,
       	"percona_server_version"	=> mysql_version,
       	"innodb_buffer_pool_size"	=> "128M",
       	"innodb_log_file_size"		=> "64M",

@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
 				'datadir_dev' => 'xvdl',
 				'innodb_buffer_pool_size' => '12G',
 				'innodb_log_file_size' => '4G',
-
+				'cluster_servers' => 'localhost',
 				# Sysbench setup
 				'sysbench_load' => true,
 				'tables' => 20,

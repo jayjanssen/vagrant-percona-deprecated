@@ -108,6 +108,8 @@ if $enable_consul == 'true' {
 
 }
 
+include training::helper_scripts
+
 if ( $percona_agent_api_key ) {
 	include percona::agent
     

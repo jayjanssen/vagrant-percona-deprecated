@@ -12,6 +12,12 @@ aws_ips='private' # Use 'public' for cross-region AWS.  'private' otherwise (or 
 security_groups = []
 
 
+serverlist="ps1,";
+(2..ps_servers).each { |i|
+  serverlist=serverlist + ',ps' + i.to_s;
+}
+
+
 Vagrant.configure("2") do |config|
 	config.vm.box = "grypyrg/centos-x86_64"
 	config.vm.box_version = "~> 7"
@@ -28,6 +34,7 @@ Vagrant.configure("2") do |config|
       # Provisioners
       provision_puppet( node_config, "percona_server.pp" ) { |puppet| 
         puppet.facter = {
+          'cluster_servers' => serverlist,
           # PXC setup
           "percona_server_version"  => '56',
           'innodb_buffer_pool_size' => '128M',

@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
   provision_puppet( config, "base.pp" )
   provision_puppet( config, "percona_server.pp" ) { |puppet|  
     puppet.facter = {
+      'cluster_servers' => name,
     	"percona_server_version"	=> mysql_version,
 			'innodb_buffer_pool_size' => '12G',
 			'innodb_log_file_size' => '4G'

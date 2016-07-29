@@ -20,7 +20,6 @@ pxc_security_groups = ['default','pxc']
 
 cluster_address = 'gcomm://' + Array.new( pxc_nodes ){ |i| pxc_node_name_prefix + (i+1).to_s }.join(',')
 
-
 Vagrant.configure("2") do |config|
 	config.vm.box = "grypyrg/centos-x86_64"
 	config.ssh.username = "vagrant"
