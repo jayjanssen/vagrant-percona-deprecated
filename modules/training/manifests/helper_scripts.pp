@@ -1,5 +1,7 @@
 class training::helper_scripts {
 
+        include test::sysbench_custom_lua
+
 	file {
 		"/root/bin":
 			ensure	=> directory;
