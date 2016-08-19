@@ -12,7 +12,8 @@ include percona::cluster::client
 
 Class['percona::repository'] -> Class['percona::cluster::client']
 
-Class['percona::cluster::server'] -> Class['test::sysbench_pkg'] -> Class['test::sysbench_test_script']
+
+Class['percona::cluster::service'] -> Class['test::sysbench_pkg'] -> Class['test::sysbench_test_script']
 include test::sysbench_pkg
 include test::sysbench_test_script
 
@@ -41,6 +42,7 @@ if ( $maxscale_disabled == 'false' ) {
 	include mariadb::maxscale
 }
 
+include percona::server-password
 include percona::cluster::server
 include percona::cluster::config
 include percona::cluster::service
@@ -57,7 +59,7 @@ class { 'mysql::datadir':
 
 Class['mysql::datadir'] -> Class['percona::cluster::server']
 
-Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['percona::cluster::config'] -> Class['percona::cluster::service']
+Class['percona::repository'] -> Class['percona::cluster::server'] -> Class['percona::cluster::config'] -> Class['percona::cluster::service'] -> Class['percona::server-password']
 
 
 include base::packages

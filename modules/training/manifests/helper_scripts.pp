@@ -17,6 +17,12 @@ class training::helper_scripts {
 			ensure	=> present,
 			mode	=> 755,
 			source	=> "puppet:///modules/training/galeraWaitUntilEmptyRecvQueue.func.sql";
+		"/var/lib/mysql/test":
+			ensure	=> directory,
+			mode 	=> 755,
+			owner	=> mysql,
+			require	=> Service['mysql'],
+			group	=> mysql;
 	}
 
 	exec {
@@ -24,7 +30,7 @@ class training::helper_scripts {
 			command => "cat /root/galeraWaitUntilEmptyRecvQueue.func.sql | mysql test && touch /root/galeraWaitUntilEmptyRecvQueue.func.sql.applied",
 			path	=> ["/bin/","/usr/bin/"],
 			creates	=> "/root/galeraWaitUntilEmptyRecvQueue.func.sql.applied",
-			require => [ Service['mysql'], File["/root/galeraWaitUntilEmptyRecvQueue.func.sql"] ];
+			require => [ File["/var/lib/mysql/test"], Service['mysql'], File["/root/galeraWaitUntilEmptyRecvQueue.func.sql"] ];
 	}
 
 	# we need to ensure the anonymous users aren't there anymore or the run_app won't work;
