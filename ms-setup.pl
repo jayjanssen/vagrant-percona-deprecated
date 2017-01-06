@@ -18,7 +18,7 @@ foreach my $line( @running_nodes_lines ) {
 # Harvest node ips
 foreach my $node( @running_nodes ) {
 	my $nic = 'eth1';
-	$nic = 'eth0' if $node->{provider} eq 'aws';
+	$nic = 'eth0' if ($node->{provider} eq 'aws' || $node->{provider} eq 'virtualbox');
 
 	my $ip_str = `vagrant ssh $node->{name} -c "ip a l | grep $nic | grep inet"`;
 	if( $ip_str =~ m/inet\s(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\// ) {
