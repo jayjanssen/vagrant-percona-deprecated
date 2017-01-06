@@ -20,7 +20,7 @@ def provider_aws( name, config, instance_type, region = nil, security_groups = n
 			aws.secret_access_key = aws_config.fetch("secret_access_key")
 
 			aws.tags = {
-				'Name' => aws_config.fetch("instance_name_prefix") + " " + name
+				'Name' => aws_config.fetch("instance_name_prefix", "") + " " + name
 			}
 
 			# Used_subnet_id can be overridden if it is nil
