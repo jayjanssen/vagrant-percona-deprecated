@@ -1,31 +1,32 @@
 [mysqld]
-datadir                         = /var/lib/mysql
-log_error                       = error.log
+datadir				= /var/lib/mysql
+log_error			= error.log
 
 socket				= /var/lib/mysql/mysql.sock
 
 log-bin
-server-id = <%= @server_id %>
+server-id 			= <%= @server_id %>
 
-query_cache_size=0
-query_cache_type=0
+query_cache_size		= 0
+query_cache_type		= 0
 
-innodb_buffer_pool_size			= <%= @innodb_buffer_pool_size %>
-innodb_log_file_size            = <%= @innodb_log_file_size %>
-innodb_flush_method				= O_DIRECT
+innodb_buffer_pool_size		= <%= @innodb_buffer_pool_size %>
+innodb_log_file_size		= <%= @innodb_log_file_size %>
+innodb_flush_method		= O_DIRECT
 innodb_file_per_table
 innodb_flush_log_at_trx_commit	= <%= @innodb_flush_log_at_trx_commit %>
-performance-schema-consumer-events-statements-history=ON
+
+performance-schema-consumer-events-statements-history = ON
 
 <%=@extra_mysqld_config %>
 
-loose-validate-password=OFF
+loose-validate-password		= OFF
 
 [mysql]
-prompt                          = "<%=@vagrant_hostname %> mysql> "
+prompt				= "<%=@vagrant_hostname %> mysql> "
 
 [client]
-user                            = root
+user				= root
 socket				= /var/lib/mysql/mysql.sock
 
 !includedir /etc/mysql.d
