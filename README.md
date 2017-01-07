@@ -178,9 +178,11 @@ vagrant destroy
 
 ## Master/Slave
 
+This Vagrantfile will spawn 2 (or more; edit the file and uncomment proper build line) MySQL servers in either VirtualBox or AWS. Running the ms-setup.pl script will set the first instance to be the master and all remaining nodes to be async slaves.
+
 ```bash
 ln -sf Vagrantfile.ms.rb Vagrantfile
-vagrant up 
+vagrant up --provider [aws|virtualbox]
 ./ms-setup.pl
 ```  
 
@@ -191,7 +193,6 @@ ln -sf Vagrantfile.pxc.rb Vagrantfile
 vagrant up
 ./pxc-bootstrap.sh
 ```  
-
 
 ## Using this repo to create benchmarks
 
