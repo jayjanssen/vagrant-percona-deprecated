@@ -36,7 +36,6 @@ if $datadir_dev {
 
 Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service'] -> Class['percona::server-password'] -> Class['test::user']
 
-
 Class['base::packages'] -> Class['misc::myq_gadgets']
 Class['base::packages'] -> Class['misc::myq_tools']
 
