@@ -178,7 +178,7 @@ vagrant destroy
 
 ## Master/Slave
 
-This Vagrantfile will spawn 2 (or more; edit the file and uncomment proper build line) MySQL servers in either VirtualBox or AWS. Running the ms-setup.pl script will set the first instance to be the master and all remaining nodes to be async slaves.
+This Vagrantfile will launch 2 (or more; edit the file and uncomment proper build line) MySQL servers in either VirtualBox or AWS. Running the ms-setup.pl script will set the first instance to be the master and all remaining nodes to be async slaves.
 
 ```bash
 ln -sf Vagrantfile.ms.rb Vagrantfile
@@ -188,10 +188,11 @@ vagrant up --provider [aws|virtualbox]
 
 ## PXC 
 
+This Vagrantfile will launch 3 Percona XtraDB Cluster nodes in either VirtualBox or AWS. The first node is automatically bootstrapped to form the cluster and the remaining 2 nodes will join.
+
 ```bash
 ln -sf Vagrantfile.pxc.rb Vagrantfile
 vagrant up
-./pxc-bootstrap.sh
 ```  
 
 ## Using this repo to create benchmarks
