@@ -195,7 +195,7 @@ ln -sf Vagrantfile.pxc.rb Vagrantfile
 vagrant up
 ```  
 
-_NOTE:_ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
+__NOTE:__ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
 
 Example:
 
@@ -207,7 +207,7 @@ vagrant up node1 && sleep 5 && vagrant up
 
 This Vagrantfile will launch 3 Percona 5.7 XtraDB Cluster nodes in either VirtualBox or AWS. The InnoDB Buffer Pool is set to _12GB_. 
 
-_WARNING:_ This requires a virtual machine with 15GB of RAM. Most consumer laptops and desktops do not have the RAM requirements to run multiple nodes of this configuration.
+__WARNING:__ This requires a virtual machine with 15GB of RAM. Most consumer laptops and desktops do not have the RAM requirements to run multiple nodes of this configuration.
 
 Each EC2 instance will use the `m3.xlarge` instance type, which has 15GB of RAM.
 
@@ -216,7 +216,7 @@ ln -sf Vagrantfile.pxc-big.rb Vagrantfile
 vagrant up
 ```
 
-_NOTE:_ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
+__NOTE:__ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
 
 Example:
 
