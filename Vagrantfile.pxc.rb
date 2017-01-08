@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
 			node_config.vm.hostname = name
 			node_config.vm.network :private_network, type: "dhcp"
 			node_config.vm.provision :hostmanager
-			
+
 			# Provisioners
 			provision_puppet( node_config, "pxc_server.pp" ) { |puppet| 
 				puppet.facter = {
@@ -43,18 +43,18 @@ Vagrant.configure("2") do |config|
 					'pxc_bootstrap_node' => (i == 1 ? true : false ),
 					'wsrep_cluster_address' => cluster_address,
 					'wsrep_provider_options' => 'gcache.size=128M; gcs.fc_limit=128',
-					
+
 					# Sysbench setup on node 1
 					'sysbench_load' => (i == 1 ? true : false ),
 					'tables' => 1,
 					'rows' => 100000,
-					'threads' => 8,
+					'threads' => 8
 				}
 			}
-			
+
 			# Providers
 			provider_virtualbox( nil, node_config, 1024 ) { |vb, override|
-				provision_puppet( override, "pxc_server.pp" ) {|puppet|
+				provision_puppet( override, "pxc_server.pp" ) { |puppet|
 					puppet.facter = {
 						'default_interface' => 'eth1',
 						
@@ -63,16 +63,16 @@ Vagrant.configure("2") do |config|
 					}
 				}
 			}
-			
+
 			provider_vmware( name, node_config, 1024 ) { |vb, override|
-				provision_puppet( override, "pxc_server.pp" ) {|puppet|
+				provision_puppet( override, "pxc_server.pp" ) { |puppet|
 					puppet.facter = {
 						'default_interface' => 'eth1',
 						'datadir_dev' => 'dm-2',
 					}
 				}
 			}
-			
+
 			provider_aws( name, node_config, 'm3.medium', aws_region, pxc_security_groups, aws_ips) { |aws, override|
 				aws.block_device_mapping = [
 					{
@@ -82,7 +82,11 @@ Vagrant.configure("2") do |config|
 						'Ebs.DeleteOnTermination' => true,
 					}
 				]
-				provision_puppet( override, "pxc_server.pp" ) {|puppet| puppet.facter = { 'datadir_dev' => 'xvdl' }}
+				provision_puppet( override, "pxc_server.pp" ) { |puppet|
+					puppet.facter = {
+						'datadir_dev' => 'xvdl'
+					}
+				}
 			}
 
 			# If you wish to use with OpenStack, you must previously have
@@ -105,4 +109,3 @@ Vagrant.configure("2") do |config|
 		end
 	end
 end
-
