@@ -20,10 +20,9 @@ class percona::config {
 		$extra_mysqld_config = ''
 	}
 
-
 	file {
 		"/etc/my.cnf":
-			ensure  => present,
+			ensure  => file,
 			content => template("percona/my.cnf.erb"),
 			require => File['/etc/mysql.d'];
 		"/etc/mysql.d":

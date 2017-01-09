@@ -20,10 +20,11 @@ class percona::server {
 	case $operatingsystem {
 		centos: {
 			package {
+				"mariadb-libs":
+					ensure => purged;
 				"Percona-Server-client-$percona_server_version.$hardwaremodel":
 					alias => "MySQL-client",
 					ensure => latest;
-
 				"Percona-Server-client-$other_percona_server_version.$hardwaremodel":
 					before => Package["Percona-Server-client-$percona_server_version.$hardwaremodel"],
 					require => Package["Percona-Server-server-$other_percona_server_version.$hardwaremodel"],
@@ -32,7 +33,6 @@ class percona::server {
 					before => Package["Percona-Server-client-$percona_server_version.$hardwaremodel"],
 					require => Package["Percona-Server-server-$other_percona_server_version2.$hardwaremodel"],
 					ensure => absent;
-
 				"Percona-Server-server-$percona_server_version.$hardwaremodel":
 					alias => "MySQL-server",
 					require => Package["MySQL-client"],

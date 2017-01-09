@@ -129,8 +129,7 @@ def provider_vmware ( name, config, ram = 256, cpus = 1 )
 	end	
 end
 
-
-# Configure this node for Vmware
+# Configure this node for Openstack
 def provider_openstack( name, config, flavor, security_groups = nil, network = nil, hostmanager_openstack_ips = nil )
     require 'yaml'
     require 'vagrant-openstack-plugin'
@@ -151,7 +150,6 @@ def provider_openstack( name, config, flavor, security_groups = nil, network = n
             os.keypair_name = os_config.fetch("keypair_name")
             override.ssh.private_key_path = os_config.fetch("private_key_path")
 
-
             if security_groups != nil
                 os.security_groups = security_groups
             end
@@ -162,7 +160,6 @@ def provider_openstack( name, config, flavor, security_groups = nil, network = n
 
             os.floating_ip = :auto
             os.floating_ip_pool = "external-net"
-
 
 			if Vagrant.has_plugin?("vagrant-hostmanager")
 				if hostmanager_openstack_ips == "private" or hostmanager_openstack_ips == nil
@@ -194,20 +191,20 @@ end
 # -- config: vm config from Vagrantfile
 # -- manifest_file: puppet manifest to use (under puppet/manifests)
 def provision_puppet( config, manifest_file )
-  config.vm.provision manifest_file, type:"puppet", preserve_order: true do |puppet|
+	config.vm.provision manifest_file, type:"puppet", preserve_order: true do |puppet|
 		puppet.manifest_file = manifest_file
-	    puppet.manifests_path = ["vm", "/vagrant/manifests"]
-	    puppet.options = "--verbose --modulepath /vagrant/modules"
-	    # puppet.options = "--verbose"
-	    if block_given?  
-	      yield( puppet )
-	    end
+		puppet.manifests_path = ["vm", "/vagrant/manifests"]
+		puppet.options = "--verbose --modulepath /vagrant/modules"
+		# puppet.options = "--verbose"
+		if block_given?  
+			yield( puppet )
+		end
 
-	    # Check if the hostname is a proper string (won't be if config is an override config)
-	    # If string, then set the vagrant_hostname facter fact automatically so base::hostname works
+		# Check if the hostname is a proper string (won't be if config is an override config)
+		# If string, then set the vagrant_hostname facter fact automatically so base::hostname works
 		if config.vm.hostname.is_a?(String)
-			puppet.facter["vagrant_hostname"] = config.vm.hostname 
-	    end
+			puppet.facter["vagrant_hostname"] = config.vm.hostname
+		end
 
 	end
 end

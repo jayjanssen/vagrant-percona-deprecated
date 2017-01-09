@@ -89,11 +89,11 @@ Vagrant.configure("2") do |config|
 				node_config.vm.network :private_network, ip: '172.0.0.1'
 			end
 
-            ssh_port = "882" + node_params["server_id"]
-            haproxy_port = "888" + node_params["server_id"]
+			ssh_port = "882" + node_params["server_id"]
+			haproxy_port = "888" + node_params["server_id"]
 
-            node_config.vm.network "forwarded_port", guest: 22, host: ssh_port, auto_correct: false
-            node_config.vm.network "forwarded_port", guest: 8080, host: haproxy_port, auto_correct: false
+			node_config.vm.network "forwarded_port", guest: 22, host: ssh_port, auto_correct: false
+			node_config.vm.network "forwarded_port", guest: 8080, host: haproxy_port, auto_correct: false
 
 			# custom port forwarding
 			node_config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true	
@@ -103,27 +103,27 @@ Vagrant.configure("2") do |config|
 
 			provision_puppet( node_config, "pxc_playground.pp" ) { |puppet|
 				puppet.facter = {
-					'vagrant_hostname'					=> name,
+					'vagrant_hostname'				=> name,
 					"percona_server_version"			=> mysql_version,
-					"haproxy_servers"					=> serverlist,
-					"haproxy_disabled"					=> node_params['haproxy_disabled'],
-					"maxscale_disabled"					=> node_params['maxscale_disabled'],
+					"haproxy_servers"				=> serverlist,
+					"haproxy_disabled"				=> node_params['haproxy_disabled'],
+					"maxscale_disabled"				=> node_params['maxscale_disabled'],
 					"haproxy_servers_primary"			=> pxc_nodes.select{|k,v| ! v.select{|k2,v2| k2=="haproxy_primary" && v2==true}.empty? }.map{|k3,v3| "#{k3}"}.join(','),
-                    "maxscale_servers"                  => serverlist,
-                    "cluster_servers"                   => serverlist,
-					"datadir_dev" 						=> "dm-2",
-					'datadir_fs'						=> "xfs",
-					'percona_agent_enabled'             => percona_agent_enabled,
+					"maxscale_servers"				=> serverlist,
+					"cluster_servers"				=> serverlist,
+					"datadir_dev" 					=> "dm-2",
+					'datadir_fs'					=> "xfs",
+					'percona_agent_enabled'				=> percona_agent_enabled,
 					'percona_agent_api_key'				=> percona_agent_api_key,
 					'innodb_buffer_pool_size' 			=> '128M',
-					'innodb_log_file_size' 				=> '64M',
-					'innodb_flush_log_at_trx_commit' 	=> '0',
+					'innodb_log_file_size'				=> '64M',
+					'innodb_flush_log_at_trx_commit'		=> '0',
 					'pxc_bootstrap_node'				=> node_params['pxc_bootstrap_node'],
 					'extra_mysqld_config'				=> 
 						'wsrep_cluster_address=gcomm://' + pxc_nodes.map{|k,v| "#{k}"}.join(',') + "\n" +
 						"wsrep_sst_receive_address=" + name + "\n" +
 						"wsrep_node_address=" + name + "\n" +
-                        "log_slave_updates\n" +
+						"log_slave_updates\n" +
 						"server_id=" + node_params['server_id'] + "\n" +
 						"log_bin" + "\n"
 				}
@@ -133,7 +133,6 @@ Vagrant.configure("2") do |config|
 			# 'wsrep_provider_options=ist.recv_addr="' + name + "\"\n" +
 			# 'wsrep_sst_receive_address=' + name + "\n" +
 			# 'wsrep_node_address=' + name + "\n" +
-
 
 			# Providers
 			provider_virtualbox( nil, node_config, 256) { |vb, override|

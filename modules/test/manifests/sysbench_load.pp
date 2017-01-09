@@ -11,9 +11,9 @@ class test::sysbench_load(
 			cwd => '/root',
 			creates => "/var/lib/mysql/$schema/";
 		'prepare_database':
-			command => "sysbench --test=sysbench_tests/db/parallel_prepare.lua --db-driver=mysql --mysql-table-engine=$engine --mysql-user=root --mysql-db=$schema --oltp-tables-count=$tables --oltp-table-size=$rows --oltp-auto-inc=off --num-threads=$threads run",
+			command => "sysbench --test=sysbench_tests/db/parallel_prepare.lua --db-driver=mysql --mysql-table-engine=$engine --mysql-user=root --mysql-db=$schema --oltp-tables-count=$tables --oltp-table-size=$rows --oltp-auto-inc=off --max-requests=$threads --num-threads=$threads run",
 			timeout => 0,  # unlimited
-			logoutput => true,
+			logoutput => 'on_failure',
 			path => ['/usr/bin', '/bin', '/usr/local/bin'],
 			cwd => '/root',
 			creates => "/var/lib/mysql/$schema/sbtest$tables.frm",
