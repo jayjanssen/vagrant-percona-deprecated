@@ -90,22 +90,15 @@ if $enable_consul == 'true' {
 		'bind_addr'	  => $default_interface ? {
 			undef => undef,
 			default => getvar("ipaddress_${default_interface}")
-			},
+		},
 		'client_addr' => '0.0.0.0',
 	})
 	
-	
 	class { 'consul':
-		join_cluster => $join_cluster,
 		config_hash => $config_hash
 	}
 
-	include consul::local_dns
-	
-	# do local_dns well before percona::service so it has time to finish loading
-	Class['consul::local_dns'] -> Class['percona::cluster::config'] 
 	Class['consul'] -> Class['percona::cluster::config']
-
 }
 
 if ( $vividcortex_api_key ) {

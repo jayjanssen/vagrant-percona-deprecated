@@ -1,15 +1,24 @@
 include stdlib
 
-class { 'consul':
-	join_cluster => $join_cluster,
-    config_hash => {
-        'datacenter'  => $datacenter,
-        'data_dir'    => '/opt/consul',
-        'log_level'   => 'INFO',
-        'node_name'   => $node_name,
-		'bind_addr'   => $bind_addr,
-        'client_addr' => '0.0.0.0',
-    }
-}
+$config_hash = delete_undef_values( {
+	'datacenter' => $datacenter,
+	'data_dir' => '/opt/consul',
+	'log_level' => 'INFO',
+	'node_name' => $node_name ? {
+		undef => $vagrant_hostname,
+		default => $node_name
+	},
+	'bind_addr' => $default_interface ? {
+		undef => undef,
+		default => getvar("ipaddress_${default_interface}")
+	},
+	'client_addr' => '0.0.0.0',
+	'ui_dir' => '/opt/consul/ui',
+	'server' => false,
+	'retry_join' => split($retry_join, ',')
+})
 
-include consul::local_dns
+class { 'consul':
+	version => '0.7.2',
+	config_hash => $config_hash
+}

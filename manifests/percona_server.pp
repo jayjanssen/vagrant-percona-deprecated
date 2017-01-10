@@ -96,16 +96,11 @@ if $enable_consul == 'true' {
 	
 	
 	class { 'consul':
-		join_cluster => $join_cluster,
 	    config_hash => $config_hash
 	}
 
-	include consul::local_dns
-	
 	Class['percona::server'] ~> Class['consul'] 
-	Class['consul::local_dns'] -> Class['percona::service'] 
 	Class['consul'] -> Class['percona::service']
-
 }
 
 include training::helper_scripts
