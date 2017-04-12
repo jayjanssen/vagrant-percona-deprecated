@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 
 # This sets up 2 nodes for replication.  Run 'ms-setup.pl' after these are provisioned.
 require './lib/vagrant-common.rb'
@@ -51,8 +51,8 @@ def build_box( config, name, ip, server_id, region, extra_mysqld_conf )
 end
 
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
 
 	build_box( config, 'master', '192.168.70.2', '1', 'us-east-1', '
 plugin-load=rpl_semi_sync_master=semisync_master.so

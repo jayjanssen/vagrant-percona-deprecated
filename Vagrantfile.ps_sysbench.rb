@@ -12,10 +12,16 @@ aws_ips='private' # Use 'public' for cross-region AWS.  'private' otherwise (or 
 security_groups = []
 
 
+serverlist="ps1,";
+(2..ps_servers).each { |i|
+  serverlist=serverlist + ',ps' + i.to_s;
+}
+
+
 Vagrant.configure("2") do |config|
-	config.vm.box = "perconajayj/centos-x86_64"
+	config.vm.box = "grypyrg/centos-x86_64"
 	config.vm.box_version = "~> 7"
-	config.ssh.username = "root"
+	config.ssh.username = "vagrant"
 
   # Create the PXC nodes
   (1..ps_servers).each do |i|
@@ -28,6 +34,7 @@ Vagrant.configure("2") do |config|
       # Provisioners
       provision_puppet( node_config, "percona_server.pp" ) { |puppet| 
         puppet.facter = {
+          'cluster_servers' => serverlist,
           # PXC setup
           "percona_server_version"  => '56',
           'innodb_buffer_pool_size' => '128M',
@@ -55,7 +62,7 @@ Vagrant.configure("2") do |config|
       }
 
       # Providers
-      provider_virtualbox( name, node_config, 1024 ) { |vb, override|
+      provider_virtualbox( nil, node_config, 1024 ) { |vb, override|
         provision_puppet( override, "percona_server.pp" ) {|puppet|
           puppet.facter = {
             'default_interface' => 'eth1',
@@ -73,7 +80,7 @@ Vagrant.configure("2") do |config|
         }
       }
   
-      provider_aws( "Percona Server #{name}", node_config, 't2.small', aws_region, security_groups, aws_ips) { |aws, override|
+      provider_aws( "Percona Server #{name}", node_config, 'm3.medium', aws_region, security_groups, aws_ips) { |aws, override|
 
         aws.block_device_mapping = [
             {

@@ -9,13 +9,14 @@ name = "beefy-percona-server"
 Vagrant.configure("2") do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
 	config.vm.hostname = name
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
   
   # Provisioners
   provision_puppet( config, "base.pp" )
   provision_puppet( config, "percona_server.pp" ) { |puppet|  
     puppet.facter = {
+      'cluster_servers' => name,
     	"percona_server_version"	=> mysql_version,
 			'innodb_buffer_pool_size' => '12G',
 			'innodb_log_file_size' => '4G'
@@ -31,7 +32,7 @@ Vagrant.configure("2") do |config|
   
   
   # Providers
-  provider_virtualbox( name, config, 256 ) { |vb, override|
+  provider_virtualbox( nil, config, 256 ) { |vb, override|
     # If we are using Virtualbox, override percona_server.pp with the right device for the datadir
     provision_puppet( override, "percona_server.pp" ) {|puppet|
       puppet.facter = {"datadir_dev" => "dm-2"}

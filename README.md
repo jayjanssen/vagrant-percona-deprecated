@@ -21,7 +21,6 @@ Principles/goals of this environment:
  * Sample databases
  * Misc: local repos for conference VMs, 
 
-
 ## Walkthrough
 
 This section should get you up and running.
@@ -45,12 +44,12 @@ This section should get you up and running.
 
 ### Openstack Setup
 
-For this to run, you'll need a custom Vagrantbox with an image to boot from on your Openstack Cloud.  I've created a CentOS one here: https://github.com/jayjanssen/packer-percona, but it would need to be rebuilt in other clouds.
+For this to run, you'll need a custom Vagrantbox with an image to boot from on your Openstack Cloud.  I've created a CentOS one here: https://github.com/grypyrg/packer-percona, but it would need to be rebuilt in other clouds.
 
 Perconians can use a prebuilt image in our Openstack lab with this command: 
 
 ```
-vagrant box add perconajayj/centos-x86_64 --provider openstack
+vagrant box add grypyrg/centos-x86_64 --provider openstack
 ```
 
 You'll also need your secrets setup in ~/.openstack_secrets:
@@ -95,7 +94,6 @@ instance_name_prefix: SOME_NAME_PREFIX
 default_vpc_subnet_id: subnet-896602d0
 ```
 
-
 #### Multi-region
 
 AWS Multi-region can be supported by adding a 'regions' hash to the .aws_secrets file:
@@ -122,24 +120,29 @@ regions:
 
 Note that the default 'keypair_name' and 'keypair_path' can still be used.  Region will default to 'us-east-1' unless you specifically override it.    
 
-#### Boxes and multi-region
+#### Boxes and Multiple AWS Regions
 
-Note that the aws Vagrant boxes you use must include AMI's in each region.  For example, see the regions listed here: https://vagrantcloud.com/perconajayj/centos-x86_64.  Packer, which is used to build this box, can be configured to add more regions if desired, but it requires building a new box.  
+AMI's are region-specific. The AWS Vagrant boxes you use must include AMI's for each region in which you wish to deploy.
 
-#### VPC integration
+For an example, see the regions listed here: https://vagrantcloud.com/grypyrg/centos-x86_64.
 
-The latest versions of my perconajayj/centos-x86-64 boxes require VPC.  Currently this software supports passing a vpc_subnet_id per instance in one of two ways:
+Packer, which is used to build this box, can be configured to add more regions if desired, but it requires building a new box.
 
-1. Set the default_vpc_subnet_id in the ~/.aws_secrets file.  This can either be global or per-region.
-1. Pass a subnet_id into the provider_aws method in the vagrant-common.rb file.
+#### AWS VPC Integration
 
+The latest versions of grypyrg/centos-x86-64 boxes require a VPC since AWS now requires VPC for all instances. 
+
+As shown in the example above, you must set the `default_vpc_subnet_id` in the ~/.aws_secrets file. You can override this on a per-region basis.
+
+You can also pass a `subnet_id` into the `provider_aws` method using an override in your Vagrantfile.
 
 ### Clone this repo
 
 ```bash
 git clone <clone URL> 
 cd vagrant-percona
-git submodule init; git submodule update
+git submodule init
+git submodule update --recursive
 ```
 
 ### Launch the box
@@ -156,42 +159,70 @@ vagrant ssh
 
 When you create a lot of vagrant environments with vagrant-percona, creating/renaming those Vagrantfile files can get quite messy easily.
 
-The repository contains a small script that allows you to create a new environment, which will build a new directory with the proper Vagrantfile files and links to the puppet code. If you're setting up a PXC environment, symlinks will also be provided to the necessary pxc-bootstrap.sh script.
+The repository contains a small script that allows you to create a new environment, which will build a new directory with the proper Vagrantfile files and links to the puppet code.
 
 This allows you to have many many Vagrant environments configured simultaneously.
 
 ```bash
-vagrant-percona$ ./create-new-env.sh single_node ~/vagrant/percona-toolkit-ptosc-plugin-ptheartbeat
+vagrant-percona$ ./create-new-env.sh single_node ~/vagrant/testing-issue-428
 Creating 'single_node' Environment
 
-percona-toolkit-ptosc-plugin-ptheartbeat gryp$ vagrant up --provider=aws
-percona-toolkit-ptosc-plugin-ptheartbeat gryp$ vagrant ssh
-```
-
-## Cleanup
-
-### Shutdown the vagrant instance(s)
-
-```
-vagrant destroy
+vagrant-percona$ cd ~/vagrant/testing-issue-428
+~/vagrant/testing-issue-428$ vagrant up --provider=aws
+~/vagrant/testing-issue-428$ vagrant ssh
 ```
 
 ## Master/Slave
 
+This Vagrantfile will launch 2 (or more; edit the file and uncomment proper build line) MySQL servers in either VirtualBox or AWS. Running the ms-setup.pl script will set the first instance to be the master and all remaining nodes to be async slaves.
+
 ```bash
 ln -sf Vagrantfile.ms.rb Vagrantfile
-vagrant up 
+vagrant up --provider [aws|virtualbox]
 ./ms-setup.pl
 ```  
 
 ## PXC 
 
+This Vagrantfile will launch 3 Percona 5.7 XtraDB Cluster nodes in either VirtualBox or AWS. The InnoDB Buffer Pool is set to 128MB. The first node is automatically bootstrapped to form the cluster. The remaining 2 nodes will join the first to form the cluster.
+
+Each Virtualbox instance is launched with 256MB of memory.
+
+Each EC2 instance will use the `m3.medium` instance type, which has 3.75GB of RAM.
+
 ```bash
 ln -sf Vagrantfile.pxc.rb Vagrantfile
 vagrant up
-./pxc-bootstrap.sh
 ```  
 
+__NOTE:__ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
+
+Example:
+
+```bash
+vagrant up node1 && sleep 5 && vagrant up
+```
+
+## PXC (Big)
+
+This Vagrantfile will launch 3 Percona 5.7 XtraDB Cluster nodes in either VirtualBox or AWS. The InnoDB Buffer Pool is set to _12GB_. 
+
+__WARNING:__ This requires a virtual machine with 15GB of RAM. Most consumer laptops and desktops do not have the RAM requirements to run multiple nodes of this configuration.
+
+Each EC2 instance will use the `m3.xlarge` instance type, which has 15GB of RAM.
+
+```bash
+ln -sf Vagrantfile.pxc-big.rb Vagrantfile
+vagrant up
+```
+
+__NOTE:__ Due to Vagrant being able to parallel build in AWS, there is no guarantee "node 1" will bootstrap before the other 2. If this happens, node 2 and node 3 will be unable to join the cluster. It is therfore recommended you launch node 1 manually, first, then launch the remaining nodes. _(This is not an issue with Virtualbox as parallel builds are not supported.)_
+
+Example:
+
+```bash
+vagrant up node1 && sleep 5 && vagrant up
+```
 
 ## Using this repo to create benchmarks
 
@@ -200,7 +231,7 @@ I use a system where I define this repo as a submodule in a test-specific git re
 ```bash
 git init some-test
 cd some-test
-git submodule add git@github.com:jayjanssen/vagrant-percona.git
+git submodule add git@github.com:grypyrg/vagrant-percona.git
 ln -s vagrant-percona/lib
 ln -s vagrant-percona/manifests
 ln -s vagrant-percona/modules
@@ -210,7 +241,10 @@ vagrant up
 ...
 ```
 
-# Future Stuff
+## Cleanup
 
+### Shutdown the vagrant instance(s)
 
-* Virtualbox support
+```
+vagrant destroy
+```

@@ -15,6 +15,7 @@ include percona::sysbench
 include percona::server
 include percona::config
 include percona::service
+include percona::server-password
 
 include misc::myq_gadgets
 include misc::myq_tools
@@ -33,8 +34,7 @@ if $datadir_dev {
 	Class['mysql::datadir'] -> Class['percona::server']
 }
 
-Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service']
-
+Class['percona::repository'] -> Class['percona::server'] -> Class['percona::config'] -> Class['percona::service'] -> Class['percona::server-password'] -> Class['test::user']
 
 Class['base::packages'] -> Class['misc::myq_gadgets']
 Class['base::packages'] -> Class['misc::myq_tools']
@@ -45,6 +45,7 @@ Class['base::insecure'] -> Class['percona::repository']
 Class['percona::repository'] -> Class['percona::toolkit']
 Class['percona::repository'] -> Class['percona::sysbench']
 
+Class['percona::server'] -> Class['percona::sysbench']
 Class['percona::server'] -> Class['percona::toolkit']
 
 Class['percona::service'] -> Class['test::user']
@@ -57,8 +58,8 @@ if $sysbench_load == 'true' {
 		threads => $threads,
 		engine => $engine
 	}
-	
-    Class['percona::server'] -> Class['percona::sysbench']
+
+	Class['percona::server'] -> Class['percona::sysbench']
 	Class['percona::sysbench'] -> Class['test::sysbench_load']
 	Class['test::user'] -> Class['test::sysbench_load']
 }
@@ -69,7 +70,7 @@ if $tokudb_enable == 'true' {
 	include percona::tokudb_config
 
 	Class['percona::server'] -> Class['percona::tokudb_install']
-	Class['percona::tokudb_install'] -> Class['percona::tokudb_enable'] -> 	Class['percona::tokudb_config']
+	Class['percona::tokudb_install'] -> Class['percona::tokudb_enable'] ->	Class['percona::tokudb_config']
 	Class['percona::service'] -> Class['percona::tokudb_enable']
 
 	if $sysbench_load == 'true' {
@@ -77,54 +78,49 @@ if $tokudb_enable == 'true' {
 	}
 }
 
-
 if $enable_consul == 'true' {
 	info( 'enabling consul agent' )
 	
 	$config_hash = delete_undef_values( {
-        'datacenter'  => $datacenter,
-        'data_dir'    => '/opt/consul',
-        'log_level'   => 'INFO',
-        'node_name'   => $node_name,
-        'bind_addr'   => $default_interface ? {
-            undef => undef,
-            default => getvar("ipaddress_${default_interface}")
-            },
-        'client_addr' => '0.0.0.0',
+		'datacenter'	=> $datacenter,
+		'data_dir'		=> '/opt/consul',
+		'log_level'		=> 'INFO',
+		'node_name'		=> $node_name,
+		'bind_addr'		=> $default_interface ? {
+				undef => undef,
+				default => getvar("ipaddress_${default_interface}")
+				},
+		'client_addr' => '0.0.0.0',
 	})
 	
-	
 	class { 'consul':
-		join_cluster => $join_cluster,
-	    config_hash => $config_hash
+		config_hash => $config_hash
 	}
 
-	include consul::local_dns
-	
 	Class['percona::server'] ~> Class['consul'] 
-	Class['consul::local_dns'] -> Class['percona::service'] 
 	Class['consul'] -> Class['percona::service']
-
 }
+
+include training::helper_scripts
 
 if ( $percona_agent_api_key ) {
 	include percona::agent
-    
-    Class['percona::service'] -> Class['percona::agent']
+	Class['percona::service'] -> Class['percona::agent']
 }
 
 if $sysbench_skip_test_client != 'true' {
-    include test::sysbench_test_script
+	include test::sysbench_test_script
+	Class['percona::service'] -> Class['test::sysbench_test_script']
 }
 
 if $mha_node == 'true' or $mha_manager == 'true' {
-  include mha::node
-  Class['percona::server'] -> Class['mha::node']
+	include mha::node
+	Class['percona::server'] -> Class['mha::node']
 
-  if $mha_manager == 'true' {
-    include mha::manager
-    Class['mha::node'] -> Class['mha::manager']
-  }
+	if $mha_manager == 'true' {
+		include mha::manager
+		Class['mha::node'] -> Class['mha::manager']
+	}
 }
 
 if $softraid == 'true' {
@@ -142,8 +138,6 @@ if ( $vividcortex_api_key ) {
 	class { 'misc::vividcortex':
 		api_key => $vividcortex_api_key
 	}
-    
-    Class['percona::service'] -> Class['misc::vividcortex']
+		
+	Class['percona::service'] -> Class['misc::vividcortex']
 }
-
-

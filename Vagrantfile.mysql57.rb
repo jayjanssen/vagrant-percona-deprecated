@@ -10,8 +10,8 @@ name = "57-community"
 Vagrant.configure("2") do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
 	config.vm.hostname = name
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
   
   # Provisioners
   provision_puppet( config, "mysql_server.pp" ) { |puppet|  
@@ -24,14 +24,14 @@ Vagrant.configure("2") do |config|
   }
   
   # Providers
-  provider_virtualbox( name, config, 1024 ) { |vb, override|
+  provider_virtualbox( nil, config, 1024 ) { |vb, override|
     # If we are using Virtualbox, override percona_server.pp with the right device for the datadir
     provision_puppet( override, "mysql_server.pp" ) {|puppet|
       puppet.facter = {"datadir_dev" => "dm-2"}
     }
   }
   
-	provider_aws( name, config, 'm1.small') { |aws, override|
+	provider_aws( name, config, 'm3.medium') { |aws, override|
     # For AWS, we want to map the proper device for this instance type
 		aws.block_device_mapping = [
 			{

@@ -61,7 +61,8 @@ class mysql::datadir (
 			path => "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
 ",
 			require => Mount["/var/lib/mysql"],
-			onlyif => "which mysql_install_db && test ! -f /var/lib/mysql/mysql/user.frm";
+			onlyif => "test -f /var/lib/mysql/mysql/user.frm",
+			unless => "which mysql_install_db";
 	}
 
 

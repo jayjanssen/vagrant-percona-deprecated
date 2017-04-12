@@ -4,14 +4,21 @@ class percona::cluster::client {
 		$percona_server_version = '-55'
 	} elsif( $percona_server_version == 56 ) {
 		$percona_server_version = '-56'
+	} elsif( $percona_server_version == 57 ) {
+		$percona_server_version = '-57'
 	}
 
 	# ugly way of making sure the version we want to use doesn't conflict with the old one
 	# (oh boy this whole thing might need refactoring)
-	if $percona_server_version == '' {
-		$other_percona_server_version="-56"
+	if $percona_server_version == '' or $percona_server_version == '-57' {
+		$other_percona_server_version="-55"
+		$other_percona_server_version2="-56"
 	} elsif $percona_server_version == "-56" {
 		$other_percona_server_version="-55"
+		$other_percona_server_version2="-57"
+	} elsif $percona_server_version == "-55" {
+		$other_percona_server_version="-56"
+		$other_percona_server_version2="-57"
 	}
 
     
@@ -23,6 +30,12 @@ class percona::cluster::client {
 				"Percona-XtraDB-Cluster-shared$other_percona_server_version.$hardwaremodel":
 					ensure => "absent";
 				"Percona-XtraDB-Cluster-devel$other_percona_server_version.$hardwaremodel":
+					ensure => "absent";
+				"Percona-XtraDB-Cluster-client$other_percona_server_version2.$hardwaremodel":
+					ensure => "absent";
+				"Percona-XtraDB-Cluster-shared$other_percona_server_version2.$hardwaremodel":
+					ensure => "absent";
+				"Percona-XtraDB-Cluster-devel$other_percona_server_version2.$hardwaremodel":
 					ensure => "absent";
                     
 				"Percona-XtraDB-Cluster-client$percona_server_version.$hardwaremodel":

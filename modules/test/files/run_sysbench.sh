@@ -130,6 +130,29 @@ function oltp {
 		run | grep -v "queue length"
 }
 
+function update_index {
+
+        sysbench \
+                --db-driver=mysql \
+                --test=/usr/share/doc/sysbench/tests/db/update_index.lua  \
+                --mysql-table-engine=$engine \
+                --mysql-user=test \
+                --mysql-password=test \
+                --mysql-db=$schema \
+                --mysql-host=$mysql_host \
+                --mysql-port=$mysql_port \
+                --oltp-tables-count=$tables \
+                --report-interval=1 \
+                --num-threads=$threads \
+                --max-requests=$max_requests \
+                --max-time=$max_time \
+                --tx-rate=$tx_rate \
+                $sysbench_args \
+                run | grep -v "queue length"
+}
+
+
+
 function oltp_custom {
 
 	sysbench \
@@ -157,6 +180,9 @@ case $task in
 		;;
 	oltp)
 		oltp
+		;;
+	update_index)
+		update_index
 		;;
 	oltp_custom)
 		oltp_custom

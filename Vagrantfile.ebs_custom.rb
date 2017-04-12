@@ -6,13 +6,13 @@
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'aws'
 
 
-# Assumes a box from https://github.com/jayjanssen/packer-percona
+# Assumes a box from https://github.com/grypyrg/packer-percona
 require './lib/vagrant-common.rb'
 
 Vagrant.configure("2") do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
-	config.vm.box = "perconajayj/centos-x86_64"
-	config.ssh.username = "root"
+	config.vm.box = "grypyrg/centos-x86_64"
+	config.ssh.username = "vagrant"
 
 	# We are assuming AWS, create a 'm1.xlarge' and name it 
 	provider_aws( "Beefy Percona Server", config, 'c4.2xlarge') { |aws, override|
@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
 				'datadir_dev' => 'xvdl',
 				'innodb_buffer_pool_size' => '12G',
 				'innodb_log_file_size' => '4G',
-
+				'cluster_servers' => 'localhost',
 				# Sysbench setup
 				'sysbench_load' => true,
 				'tables' => 20,

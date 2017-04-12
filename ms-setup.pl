@@ -32,7 +32,7 @@ foreach my $node( @running_nodes ) {
 my $master = shift @running_nodes;
 my $master_ip = $master->{ip};
 
-print "Master node will be: $master->{name}\n";
+print "Master node will be: $master->{name} ($master->{ip})\n";
 
 # Get Master binlog file and position
 my $master_status =<<END;
@@ -43,10 +43,18 @@ my $master_log_file;
 my $master_log_pos = 0;
 if( $master_status_str[$#master_status_str] =~ m/^(.+)\s+(\d+)/ ) {
 	$master_log_file = $1;
-	# $master_log_pos = $2;
+	$master_log_pos = $2;
 } else {
 	die "Could not parse master log file and position!\n";
 }
+
+# Report master status
+print <<END;
+Replication coordinates:
+	master_host='$master_ip'
+	master_log_file='$master_log_file'
+	master_log_pos=$master_log_pos
+END
 
 # Setup slave user:
 print "Setting up 'repl' user on $master->{name}\n";
@@ -56,17 +64,10 @@ END
 system( "vagrant ssh $master->{name} -c \"$grant\"");
 
 # Configure the slaves
-print <<END;
-Replication coordinates:
-	master_host='$master_ip'
-	master_log_file='$master_log_file'
-	master_log_pos=$master_log_pos
-END
-
 my $change_master =<<END;
 mysql -e \\"CHANGE MASTER TO master_host='$master_ip', master_log_file='$master_log_file', master_log_pos=$master_log_pos, master_user='repl', master_password='repl'; start slave;\\"
 END
 foreach my $slave( @running_nodes ) {
-	print "Executing CHANGE MASTER on $slave->{name}\n";
+	print "Executing CHANGE MASTER and START SLAVE on '$slave->{name}'\n";
 	system( "vagrant ssh $slave->{name} -c \"$change_master\"");
 }

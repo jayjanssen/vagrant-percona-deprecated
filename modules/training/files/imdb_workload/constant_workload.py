@@ -124,8 +124,8 @@ def main():
     	    movie.rnd_queries()
 	    time.sleep(0.5)
             movie.rnd_user()
-	    time.sleep(10)
+	    time.sleep(1)
 	except:
-	    time.sleep(30)
+	    time.sleep(10)
 
 main()
